@@ -1,0 +1,8 @@
+Changes
+Makefile.PL
+MANIFEST
+ppport.h
+README
+Syntax.xs
+t/Object-Simple-Syntax.t
+lib/Object/Simple/Syntax.pm

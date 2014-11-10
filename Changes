@@ -1,0 +1,6 @@
+Revision history for Perl extension Object::Simple::Syntax.
+
+0.01  Sun Nov  9 01:06:24 2014
+	- original version; created by h2xs 1.23 with options
+		-A -n Object::Simple::Syntax
+
