@@ -8,6 +8,67 @@ This is Perl 5 mop minus proposal.
 2. mop is improvement of Perl 5 object system, not new one.
 3. Core change is as small as possible or there are no core change.
 
+## Installation
+
+    curl -L https://github.com/yuki-kimoto/mop-minus-proposal
+
+## Example
+
+    # main.pl
+    use Point3D;
+    my $point = Point3D->new;
+    print $point->x(0);
+    my $x = $point->x;
+    
+    # Point3D.pm
+    package Point3D {
+      use mop::minus;
+      
+      extends Point;
+      with Role1, Role2;
+      
+      has z = 0;
+      
+      # will be "method clear { ... }"
+      sub clear ($self) {
+        $self->z(0);
+      }
+    }
+    
+    # Point.pm
+    package Point {
+      use mop::minus;
+      
+      has x = 0;
+      has y = 0;
+      
+      # will be "method clear { ... }"
+      sub clear ($self) {
+        $self->x(0);
+        $self->y(0);
+      }
+    }
+
+    # Role1.pm
+    package Role1 {
+      use mop::minus;
+      
+      # will be "method foo { ... }"
+      sub foo {
+        return 'foo';
+      }
+    }
+
+    # Role2.pm
+    package Role1 {
+      use mop::minus;
+      
+      # will be "method bar { ... }"
+      sub bar {
+        return 'bar';
+      }
+    }
+
 ## Implementation
 
 ### use mop - define class.
