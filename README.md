@@ -10,7 +10,8 @@ This is Perl 5 mop minus proposal.
 
 ## Installation
 
-    curl -L https://github.com/yuki-kimoto/mop-minus-proposal
+    curl -L https://github.com/yuki-kimoto/mop-minus-proposal/archive/mop-minus-latest.tar.gz > mop-minus-latest.tar.gz
+    cpanm mop-minus-latest.tar.gz
 
 ## Example
 
@@ -69,7 +70,7 @@ This is Perl 5 mop minus proposal.
       }
     }
 
-## Implementation
+## mop minus specification
 
 ### use mop - define class.
 
@@ -82,9 +83,9 @@ A. using mop::minus module define class
       ...
     }
 
-This class inherit mop::object.
+This class inherit mop::minus::object(In Currently implementaion, inherit Object::Simple).
 
-    package mop::object;
+    package mop::minus::object;
     sub new {
       my $class = shift;
       bless @_
@@ -95,15 +96,15 @@ This class inherit mop::object.
       ref $class || $class;
     }
 
-mop::object is base class of all class.
+mop::minus::object is base class of all class.
 
-B. mop::object is hash-based object.
+B. mop::minus::object is hash-based object.
 
     my $my_obj = MyClass->new;
     $my_obj->{x} = 1;
     Scalar::Util::weaken $my_obj->{x};
 
-C. mop::object new method can receive hash and hash reference.
+C. mop::minus::object new method can receive hash and hash reference.
 
     my $my_obj = MyClass->new(x => 1, y => 2);
     my $my_obj = MyClass->new({x => 1, y = 2});
@@ -201,7 +202,7 @@ The following single inheritance structuure is created.
     |
     MyClass
 
-### method keyword - define method
+### method keyword - define method (In current implementation, this is not implemented)
 
     package MyClass {
       use mop::minus;
