@@ -8,7 +8,6 @@ use warnings;
 use Carp 'croak';
 
 use feature ();
-use experimental ();
 
 use Parse::Keyword {
   extends => \&extends_parser,
@@ -63,7 +62,8 @@ sub import {
   *{"${caller}::extends"} = \&extends;
   *{"${caller}::with"} = \&with;
   
-  experimental->import('signatures');
+  feature->import('signatures');
+  warnings->unimport('experimental::signatures');
 
   {
     my $code = "package $caller; use Object::Simple -base;";

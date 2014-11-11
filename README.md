@@ -10,7 +10,7 @@ This is Perl 5 mop minus proposal.
 
 ## Installation
 
-    curl -L https://github.com/yuki-kimoto/mop-minus-proposal/archive/mop-minus-latest.tar.gz > mop-minus-latest.tar.gz
+    curl -L https://github.com/yuki-kimoto/mop-minus-proposal/archive/latest.tar.gz > mop-minus-latest.tar.gz
     cpanm mop-minus-latest.tar.gz
 
 ## Example
@@ -143,7 +143,7 @@ B. The way to include role is the following mechanism.
 
 **1** Role class is copied and renamed
       
-    pckage mop::role_id_xxxxxx::SomeRole {
+    pckage mop::minus::role_id_xxxxxx::SomeRole {
       use mop::minus;
       
       has p;
@@ -155,7 +155,7 @@ B. The way to include role is the following mechanism.
     
 **2** role class is copied and it extends base class of MyClass if exists.
     
-    package mop::role_id_xxxxxx::SomeRole {
+    package mop::minus::role_id_xxxxxx::SomeRole {
       use mop::minus;
       extends BaseClass;
       
@@ -170,7 +170,7 @@ B. The way to include role is the following mechanism.
     
     package MyClass {
       use mop::minus;
-      extends mop::role_id_xxxxxx::SomeRole;
+      extends mop::minus::role_id_xxxxxx::SomeRole;
       
       ...
     }
@@ -179,7 +179,7 @@ The following new single inheritance structure is created. Role id xxxxxx is inc
 
     BaseClass
     |
-    mop::role_id_xxxxxx::SomeRole
+    mop::minus::role_id_xxxxxx::SomeRole
     |
     MyClass
 
@@ -196,9 +196,9 @@ The following single inheritance structuure is created.
 
     BaseClass
     |
-    mop::role_id_xxxxxx::SomeRole1
+    mop::minus::role_id_xxxxxx::SomeRole1
     |
-    mop::role_id_xxxxxx::SomeRole2
+    mop::minus::role_id_xxxxxx::SomeRole2
     |
     MyClass
 
