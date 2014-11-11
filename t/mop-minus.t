@@ -85,7 +85,7 @@ use lib 't/mop-minus';
   }
 }
 
-# -base flag
+# extends
 {
   {
     use T2;

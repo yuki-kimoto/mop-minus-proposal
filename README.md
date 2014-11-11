@@ -15,12 +15,20 @@ This is Perl 5 mop minus proposal.
 
 ## Example
 
-    # main.pl
-    use Point3D;
-    my $point = Point3D->new;
-    print $point->x(0);
-    my $x = $point->x;
-    
+    # Point.pm
+    package Point {
+      use mop::minus;
+      
+      has x = 0;
+      has y = 0;
+      
+      # will be "method clear { ... }"
+      sub clear ($self) {
+        $self->x(0);
+        $self->y(0);
+      }
+    }
+
     # Point3D.pm
     package Point3D {
       use mop::minus;
@@ -36,20 +44,6 @@ This is Perl 5 mop minus proposal.
       }
     }
     
-    # Point.pm
-    package Point {
-      use mop::minus;
-      
-      has x = 0;
-      has y = 0;
-      
-      # will be "method clear { ... }"
-      sub clear ($self) {
-        $self->x(0);
-        $self->y(0);
-      }
-    }
-
     # Role1.pm
     package Role1 {
       use mop::minus;
@@ -69,6 +63,12 @@ This is Perl 5 mop minus proposal.
         return 'bar';
       }
     }
+
+    # main.pl
+    use Point3D;
+    my $point = Point3D->new;
+    print $point->x(0);
+    my $x = $point->x;
 
 ## mop minus specification
 
