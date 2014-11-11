@@ -1,8 +1,17 @@
 Changes
+lib/mop/minus.pm
 Makefile.PL
-MANIFEST
-ppport.h
-README
-Syntax.xs
-t/Object-Simple-Syntax.t
-lib/Object/Simple/Syntax.pm
+MANIFEST			This list of files
+README.md
+t/basic.t
+t/lib/Point.pm
+t/lib/Point3D.pm
+t/lib/Role1.pm
+t/lib/Role2.pm
+t/mop-minus.t
+t/mop-minus/Role1.pm
+t/mop-minus/Role2.pm
+t/mop-minus/T1.pm
+t/mop-minus/T2.pm
+t/mop-minus/T3.pm
+t/mop-minus/T3_2.pm

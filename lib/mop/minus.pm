@@ -1,3 +1,5 @@
+use v5.20;
+
 package mop::minus;
 
 our $VERSION = '0.01';
@@ -8,7 +10,6 @@ use warnings;
 use Carp 'croak';
 
 use feature ();
-use experimental ();
 
 use Parse::Keyword {
   extends => \&extends_parser,
@@ -63,7 +64,10 @@ sub import {
   *{"${caller}::extends"} = \&extends;
   *{"${caller}::with"} = \&with;
   
-  experimental->import('signatures');
+  if ($] >= 5.020) {
+    feature->import('signatures');
+    warnings->unimport('experimental::signatures');
+  }
 
   {
     my $code = "package $caller; use Object::Simple -base;";
@@ -151,6 +155,7 @@ sub with {
   {
     my $code;
     if ($extends) {
+      $DB::single = 1;
       $code = qq/package $class; use Object::Simple -base => "$extends", $args_str;/;
     }
     else {

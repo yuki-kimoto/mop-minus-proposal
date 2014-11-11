@@ -19,7 +19,7 @@
 #     INC => q[-I.]
 #     LIBS => [q[]]
 #     NAME => q[mop::minus]
-#     PREREQ_PM => { Object::Simple=>q[3.12], Parse::Keyword=>q[0.08] }
+#     PREREQ_PM => { Object::Simple=>q[3.13], Parse::Keyword=>q[0.08] }
 #     TEST_REQUIRES => {  }
 #     VERSION_FROM => q[lib/mop/minus.pm]
 
@@ -504,7 +504,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - inc' >> META_new.yml
 	$(NOECHO) $(ECHO) 'requires:' >> META_new.yml
-	$(NOECHO) $(ECHO) '  Object::Simple: '\''3.12'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Object::Simple: '\''3.13'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Parse::Keyword: '\''0.08'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'version: '\''0.01'\''' >> META_new.yml
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
@@ -543,7 +543,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      },' >> META_new.json
 	$(NOECHO) $(ECHO) '      "runtime" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
-	$(NOECHO) $(ECHO) '            "Object::Simple" : "3.12",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Object::Simple" : "3.13",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Parse::Keyword" : "0.08"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
 	$(NOECHO) $(ECHO) '      }' >> META_new.json
@@ -854,8 +854,8 @@ ppd :
 	$(NOECHO) $(ECHO) '    <ABSTRACT>mop minus proposal</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Yuki Kimoto&lt;kimoto.yuki@gmail.com&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Object::Simple" VERSION="3.12" />' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE VERSION="0.08" NAME="Parse::Keyword" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE VERSION="3.13" NAME="Object::Simple" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Parse::Keyword" VERSION="0.08" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-5.20" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> $(DISTNAME).ppd
