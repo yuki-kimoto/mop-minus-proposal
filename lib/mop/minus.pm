@@ -91,29 +91,29 @@ sub has {
 }
 
 sub has_parser {
-    my $caller = compiling_package;
-    
-    lex_read_space;
+  my $caller = compiling_package;
+  
+  lex_read_space;
 
-    my $name = parse_name('attribute');
+  my $name = parse_name('attribute');
 
-    lex_read_space;
-    
-    my $default_exists;
-    my $default;
-    if (lex_peek eq '=') {
-        $default_exists = 1;
-        lex_read;
-        lex_read_space;
-        $default = parse_fullexpr;
-    }
-
-    lex_read_space;
-
-    die "Couldn't parse attribute $name" unless lex_peek eq ';';
+  lex_read_space;
+  
+  my $default_exists;
+  my $default;
+  if (lex_peek eq '=') {
+    $default_exists = 1;
     lex_read;
+    lex_read_space;
+    $default = parse_fullexpr;
+  }
 
-    return (sub { ($caller, $name, $default_exists, $default) }, 1);
+  lex_read_space;
+
+  die "Couldn't parse attribute $name" unless lex_peek eq ';';
+  lex_read;
+
+  return (sub { ($caller, $name, $default_exists, $default) }, 1);
 }
 
 sub extends {
