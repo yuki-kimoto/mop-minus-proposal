@@ -39,63 +39,51 @@ sub import {
 }
 
 sub create_accessor {
-  my ($class, @args) = @_;
+  my ($class, $attr, $opt) = @_;
   
-  # Fix argument
-  unshift @args, (shift @args, undef) if @args % 2;
+  # Check attribute name
+  Carp::croak qq{Attribute "$attr" invalid} unless $attr =~ /^[a-zA-Z_]\w*$/;
   
-  for (my $i = 0; $i < @args; $i += 2) {
-      
-    # Attribute name
-    my $attrs = $args[$i];
-    $attrs = [$attrs] unless ref $attrs eq 'ARRAY';
-    
-    # Default
-    my $default = $args[$i + 1];
-    
-    for my $attr (@$attrs) {
+  # Default
+  my $default = $opt->{default};
+  
+  # Header (check arguments)
+  my $code = "*{\"${class}::$attr\"} = sub {\n  if (\@_ == 1) {\n";
 
-      Carp::croak qq{Attribute "$attr" invalid} unless $attr =~ /^[a-zA-Z_]\w*$/;
+  # No default value (return value)
+  unless (exists $opt->{default}) { $code .= "    return \$_[0]{'$attr'};" }
 
-      # Header (check arguments)
-      my $code = "*{\"${class}::$attr\"} = sub {\n  if (\@_ == 1) {\n";
+  # Default value
+  else {
 
-      # No default value (return value)
-      unless (defined $default) { $code .= "    return \$_[0]{'$attr'};" }
+    Carp::croak "Default has to be a code reference or constant value (${class}::$attr)"
+      if ref $default && ref $default ne 'CODE';
 
-      # Default value
-      else {
+    # Return value
+    $code .= "    return \$_[0]{'$attr'} if exists \$_[0]{'$attr'};\n";
 
-        Carp::croak "Default has to be a code reference or constant value (${class}::$attr)"
-          if ref $default && ref $default ne 'CODE';
-
-        # Return value
-        $code .= "    return \$_[0]{'$attr'} if exists \$_[0]{'$attr'};\n";
-
-        # Return default value
-        $code .= "    return \$_[0]{'$attr'} = ";
-        $code .= ref $default eq 'CODE' ? '$default->($_[0]);' : '$default;';
-      }
-
-      # Store value
-      $code .= "\n  }\n  \$_[0]{'$attr'} = \$_[1];\n";
-
-      # Footer (return invocant)
-      $code .= "  \$_[0];\n}";
-
-      # We compile custom attribute code for speed
-      no strict 'refs';
-      warn "-- Attribute $attr in $class\n$code\n\n" if $ENV{OBJECT_SIMPLE_DEBUG};
-      Carp::croak "mop::minus error: $@" unless eval "$code;1";
-    }
+    # Return default value
+    $code .= "    return \$_[0]{'$attr'} = ";
+    $code .= ref $default eq 'CODE' ? '$default->($_[0]);' : '$default;';
   }
+
+  # Store value
+  $code .= "\n  }\n  \$_[0]{'$attr'} = \$_[1];\n";
+
+  # Footer (return invocant)
+  $code .= "  \$_[0];\n}";
+
+  # We compile custom attribute code for speed
+  no strict 'refs';
+  warn "-- Attribute $attr in $class\n$code\n\n" if $ENV{MOP_MINUS__DEBUG};
+  Carp::croak "mop::minus error: $@" unless eval "$code;1";
 }
 
 sub has {
   my ($class, $name, $default_exists, $default_code) = @_;
   
   if ($default_exists) {
-    create_accessor($class, $name, $default_code->());
+    create_accessor($class, $name, {default => $default_code->()});
   }
   else {
     create_accessor($class, $name);
