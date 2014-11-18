@@ -132,61 +132,6 @@ sub new {
   bless @_ ? @_ > 1 ? {@_} : {%{$_[0]}} : {}, ref $class || $class;
 }
 
-sub attr {
-  my ($self, @args) = @_;
-  
-  my $class = ref $self || $self;
-  
-  # Fix argument
-  unshift @args, (shift @args, undef) if @args % 2;
-  
-  for (my $i = 0; $i < @args; $i += 2) {
-      
-    # Attribute name
-    my $attrs = $args[$i];
-    $attrs = [$attrs] unless ref $attrs eq 'ARRAY';
-    
-    # Default
-    my $default = $args[$i + 1];
-    
-    for my $attr (@$attrs) {
-
-      Carp::croak qq{Attribute "$attr" invalid} unless $attr =~ /^[a-zA-Z_]\w*$/;
-
-      # Header (check arguments)
-      my $code = "*{\"${class}::$attr\"} = sub {\n  if (\@_ == 1) {\n";
-
-      # No default value (return value)
-      unless (defined $default) { $code .= "    return \$_[0]{'$attr'};" }
-
-      # Default value
-      else {
-
-        Carp::croak "Default has to be a code reference or constant value (${class}::$attr)"
-          if ref $default && ref $default ne 'CODE';
-
-        # Return value
-        $code .= "    return \$_[0]{'$attr'} if exists \$_[0]{'$attr'};\n";
-
-        # Return default value
-        $code .= "    return \$_[0]{'$attr'} = ";
-        $code .= ref $default eq 'CODE' ? '$default->($_[0]);' : '$default;';
-      }
-
-      # Store value
-      $code .= "\n  }\n  \$_[0]{'$attr'} = \$_[1];\n";
-
-      # Footer (return invocant)
-      $code .= "  \$_[0];\n}";
-
-      # We compile custom attribute code for speed
-      no strict 'refs';
-      warn "-- Attribute $attr in $class\n$code\n\n" if $ENV{OBJECT_SIMPLE_DEBUG};
-      Carp::croak "mop::minus error: $@" unless eval "$code;1";
-    }
-  }
-}
-
 =head1 NAME
 
 mop::minus::object - base object
