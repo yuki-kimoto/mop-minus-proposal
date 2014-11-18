@@ -28,6 +28,8 @@ This is Perl 5 mop minus proposal.
         $self->y(0);
       }
     }
+    
+    1;
 
     # Point3D.pm
     package Point3D {
@@ -44,6 +46,8 @@ This is Perl 5 mop minus proposal.
       }
     }
     
+    1;
+    
     # Role1.pm
     package Role1 {
       use mop::minus;
@@ -53,6 +57,8 @@ This is Perl 5 mop minus proposal.
         return 'foo';
       }
     }
+    
+    1;
 
     # Role2.pm
     package Role1 {
@@ -63,6 +69,8 @@ This is Perl 5 mop minus proposal.
         return 'bar';
       }
     }
+    
+    1;
 
     # main.pl
     use Point3D;

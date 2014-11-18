@@ -20,7 +20,9 @@ package mop::minus 0.01 {
     # Caller package
     my $caller = caller;
     
-    # Subroutine signatures
+    # Feature import
+    strict->import;
+    warnings->import;
     feature->import('signatures');
     warnings->unimport('experimental::signatures');
     
@@ -332,6 +334,8 @@ mop::minus - mop minus proposal
     }
   }
   
+  1;
+  
   # Point.pm
   package Point {
     use mop::minus;
@@ -345,6 +349,8 @@ mop::minus - mop minus proposal
       $self->y(0);
     }
   }
+  
+  1;
 
   # Role1.pm
   package Role1 {
@@ -354,6 +360,8 @@ mop::minus - mop minus proposal
       return 'foo';
     }
   }
+  
+  1;
 
   # Role2.pm
   package Role1 {
@@ -363,6 +371,8 @@ mop::minus - mop minus proposal
       return 'bar';
     }
   }
+  
+  1;
 
 =head1 DESCRIPTION
 
