@@ -127,7 +127,6 @@ sub extends {
   my $base_class_path = $base_class;
   $base_class_path =~ s/::|'/\//g;
   require "$base_class_path.pm";
-  
   no strict 'refs';
   @{"${class }::ISA"} = ($base_class);
   
@@ -157,47 +156,53 @@ sub extends_parser {
   return (sub { $class_info }, 1);
 }
 
+my $role_id = 1;
+
 sub with {
   my ($class_info) = @_;
   
   my $class = $class_info->{class};
-  
-  my @args;
-  if (my $with = $class_info->{with}) {
-    push @args, '"with"';
-    my $with_values_str = '[';
-    for my $w (@$with) {
-      $with_values_str .= qq/"$w",/;
-    }
-    $with_values_str .= ']';
-    push @args, $with_values_str;
-  }
+  my $roles = $class_info->{with};
 
-  my $args_str = join(',', @args);
-  
-  no strict 'refs';
-  my $extends;
-  if (@{"${class}::ISA"}) {
-    $extends = ${"${class}::ISA"}[0];
-  }
-
-  {
-    my $code;
-    if ($extends) {
-      $DB::single = 1;
-      $code = qq/package $class; use mop::minus::object -base => "$extends", $args_str;/;
+  # Roles
+  for my $role (@$roles) {
+    
+    my $role_file = $role;
+    $role_file =~ s/::/\//g;
+    $role_file .= ".pm";
+    require $role_file;
+    
+    my $role_path = $INC{$role_file};
+    open my $fh, '<', $role_path
+      or Carp::croak "Can't open file $role_path: $!";
+    
+    my $role_content = do { local $/; <$fh> };
+    my $role_for_file = "mop::minus::role::id${role_id}::$role";
+    $role_id++;
+    $INC{$role_for_file} = undef;
+    
+    my $role_for = $role_for_file;
+    $role_for =~ s/\//::/g;
+    $role_for =~ s/\.pm$//;
+    
+    my $role_for_content = $role_content;
+    if ($role_for_content =~ s/package\s+([a-zA-Z0-9:]+)/package $role_for/) {
+      eval $role_for_content;
+      Carp::croak $@ if $@;
     }
     else {
-      $code = "package $class; use mop::minus::object $args_str;";
+      Carp::croak "Can't clone $role";
     }
-
-    eval $code;
-    croak "Can't load $code:$@" if $@;
+    
+    {
+      no strict 'refs';
+      my $parent = ${"${class}::ISA"}[0];
+      @{"${class}::ISA"} = ($role_for);
+      if ($parent) {
+        @{"${role_for}::ISA"} = ($parent);
+      }
+    }
   }
-
-  no strict 'refs';
-  no warnings 'redefine';
-  *{"${class}::has"} = \&has;
   
   return 1;
 }
