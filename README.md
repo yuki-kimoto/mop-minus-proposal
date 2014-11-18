@@ -83,7 +83,7 @@ A. using mop::minus module define class
       ...
     }
 
-This class inherit mop::minus::object(In Currently implementaion, inherit Object::Simple).
+This class inherit mop::minus::object.
 
     package mop::minus::object;
     sub new {
@@ -143,7 +143,7 @@ B. The way to include role is the following mechanism.
 
 **1** Role class is copied and renamed
       
-    pckage mop::minus::role_id_xxxxxx::SomeRole {
+    pckage mop::minus::role::idxxxxxx::SomeRole {
       use mop::minus;
       
       has p;
@@ -155,7 +155,7 @@ B. The way to include role is the following mechanism.
     
 **2** role class is copied and it extends base class of MyClass if exists.
     
-    package mop::minus::role_id_xxxxxx::SomeRole {
+    package mop::minus::role::idxxxxxx::SomeRole {
       use mop::minus;
       extends BaseClass;
       
@@ -170,7 +170,7 @@ B. The way to include role is the following mechanism.
     
     package MyClass {
       use mop::minus;
-      extends mop::minus::role_id_xxxxxx::SomeRole;
+      extends mop::minus::role::idxxxxxx::SomeRole;
       
       ...
     }
@@ -179,7 +179,7 @@ The following new single inheritance structure is created. Role id xxxxxx is inc
 
     BaseClass
     |
-    mop::minus::role_id_xxxxxx::SomeRole
+    mop::minus::role::idxxxxxx::SomeRole
     |
     MyClass
 
@@ -196,9 +196,9 @@ The following single inheritance structuure is created.
 
     BaseClass
     |
-    mop::minus::role_id_xxxxxx::SomeRole1
+    mop::minus::role::idxxxxxx::SomeRole1
     |
-    mop::minus::role_id_xxxxxx::SomeRole2
+    mop::minus::role::idxxxxxx::SomeRole2
     |
     MyClass
 
