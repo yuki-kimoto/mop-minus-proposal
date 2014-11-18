@@ -190,87 +190,87 @@ sub with_parser {
 }
 
 sub parse_name {
-    my ($what, $allow_package) = @_;
-    my $name = '';
+  my ($what, $allow_package) = @_;
+  my $name = '';
 
-    # XXX this isn't quite right, i think, but probably close enough for now?
-    my $start_rx = qr/^[\p{ID_Start}_]$/;
-    my $cont_rx  = qr/^\p{ID_Continue}$/;
+  # XXX this isn't quite right, i think, but probably close enough for now?
+  my $start_rx = qr/^[\p{ID_Start}_]$/;
+  my $cont_rx  = qr/^\p{ID_Continue}$/;
 
-    my $char_rx = $start_rx;
+  my $char_rx = $start_rx;
 
-    while (1) {
-        my $char = lex_peek;
-        last unless length $char;
-        if ($char =~ $char_rx) {
-            $name .= $char;
-            lex_read;
-            $char_rx = $cont_rx;
-        }
-        elsif ($allow_package && $char eq ':') {
-            if (lex_peek(3) !~ /^::(?:[^:]|$)/) {
-                my $invalid = $name . read_tokenish();
-                die "Invalid identifier: $invalid";
-            }
-            $name .= '::';
-            lex_read(2);
-        }
-        else {
-            last;
-        }
+  while (1) {
+    my $char = lex_peek;
+    last unless length $char;
+    if ($char =~ $char_rx) {
+      $name .= $char;
+      lex_read;
+      $char_rx = $cont_rx;
     }
+    elsif ($allow_package && $char eq ':') {
+      if (lex_peek(3) !~ /^::(?:[^:]|$)/) {
+        my $invalid = $name . read_tokenish();
+        die "Invalid identifier: $invalid";
+      }
+      $name .= '::';
+      lex_read(2);
+    }
+    else {
+      last;
+    }
+  }
 
-    die read_tokenish() . " is not a valid $what name" unless length $name;
+  die read_tokenish() . " is not a valid $what name" unless length $name;
 
-    return $name;
+  return $name;
 }
 
 sub read_tokenish {
-    my $token = '';
-    if ((my $next = lex_peek) =~ /[\$\@\%]/) {
-        $token .= $next;
-        lex_read;
-    }
-    while ((my $next = lex_peek) =~ /\S/) {
-        $token .= $next;
-        lex_read;
-        last if ($next . lex_peek) =~ /^\S\b/;
-    }
-    return $token;
+  my $token = '';
+  if ((my $next = lex_peek) =~ /[\$\@\%]/) {
+    $token .= $next;
+    lex_read;
+  }
+  while ((my $next = lex_peek) =~ /\S/) {
+    $token .= $next;
+    lex_read;
+    last if ($next . lex_peek) =~ /^\S\b/;
+  }
+  return $token;
 }
 
 sub parse_modifier_with_multiple_values {
-    my ($modifier) = @_;
+  my ($modifier) = @_;
 
-    my $modifier_length = length $modifier;
+  my $modifier_length = length $modifier;
 
-    return unless lex_peek($modifier_length + 1) =~ /^$modifier\b/;
+  return unless lex_peek($modifier_length + 1) =~ /^$modifier\b/;
 
-    lex_read($modifier_length);
+  lex_read($modifier_length);
+  lex_read_space;
+
+  my @names;
+
+  do {
+    my $name = parse_name('role', 1);
+    push @names, $name;
     lex_read_space;
+  } while (lex_peek eq ',' && do { lex_read; lex_read_space; 1 });
 
-    my @names;
-
-    do {
-        my $name = parse_name('role', 1);
-        push @names, $name;
-        lex_read_space;
-    } while (lex_peek eq ',' && do { lex_read; lex_read_space; 1 });
-
-    return @names;
+  return @names;
 }
 
 sub parse_multiple_values {
 
-    my @names;
+  my @names;
 
-    do {
-        my $name = parse_name('role', 1);
-        push @names, $name;
-        lex_read_space;
-    } while (lex_peek eq ',' && do { lex_read; lex_read_space; 1 });
+  do {
+    my $name = parse_name('role', 1);
+    push @names, $name;
+    lex_read_space;
+  } while (lex_peek eq ',' && do { lex_read; lex_read_space; 1 });
 
-    return @names;
+  return @names;
 }
 
 1;
