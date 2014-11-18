@@ -119,24 +119,17 @@ sub has_parser {
 sub extends {
   my ($class_info) = @_;
   
+  # Class infomation
   my $class = $class_info->{class};
+  my $base_class = $class_info->{extends};
   
-  my @args;
-  if (my $extends = $class_info->{extends}) {
-    push @args, ('-base', '"' . $class_info->{extends} . '"');
-  }
-
-  my $args_str = join(',', @args);
-
-  {
-    my $code = "package $class; use mop::minus::object $args_str;";
-    eval $code;
-    croak "Can't load $code:$@" if $@;
-  }
-
+  # Extends
+  my $base_class_path = $base_class;
+  $base_class_path =~ s/::|'/\//g;
+  require "$base_class_path.pm";
+  
   no strict 'refs';
-  no warnings 'redefine';
-  *{"${class}::has"} = \&has;
+  @{"${class }::ISA"} = ($base_class);
   
   return 1;
 }
