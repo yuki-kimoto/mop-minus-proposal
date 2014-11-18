@@ -18,6 +18,5 @@ no_index:
     - t
     - inc
 requires:
-  Object::Simple: '3.13'
   Parse::Keyword: '0.08'
 version: '0.01'

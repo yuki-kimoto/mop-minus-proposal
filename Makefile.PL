@@ -4,7 +4,6 @@ WriteMakefile(
     NAME              => 'mop::minus',
     VERSION_FROM      => 'lib/mop/minus.pm',
     PREREQ_PM         => {
-      'Object::Simple' => '3.13',
       'Parse::Keyword' => '0.08'
     },
     ABSTRACT_FROM     => 'lib/mop/minus.pm', # retrieve abstract from module

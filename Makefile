@@ -19,7 +19,7 @@
 #     INC => q[-I.]
 #     LIBS => [q[]]
 #     NAME => q[mop::minus]
-#     PREREQ_PM => { Object::Simple=>q[3.13], Parse::Keyword=>q[0.08] }
+#     PREREQ_PM => { Parse::Keyword=>q[0.08] }
 #     TEST_REQUIRES => {  }
 #     VERSION_FROM => q[lib/mop/minus.pm]
 
@@ -166,7 +166,8 @@ C_FILES  =
 O_FILES  = 
 H_FILES  = 
 MAN1PODS = 
-MAN3PODS = lib/mop/minus.pm
+MAN3PODS = lib/mop/minus.pm \
+	lib/mop/minus/object.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIB)$(DFSEP)Config.pm $(PERL_INC)$(DFSEP)config.h
@@ -188,10 +189,13 @@ PERL_ARCHIVE       =
 PERL_ARCHIVE_AFTER = 
 
 
-TO_INST_PM = lib/mop/minus.pm
+TO_INST_PM = lib/mop/minus.pm \
+	lib/mop/minus/object.pm
 
 PM_TO_BLIB = lib/mop/minus.pm \
-	blib/lib/mop/minus.pm
+	blib/lib/mop/minus.pm \
+	lib/mop/minus/object.pm \
+	blib/lib/mop/minus/object.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -416,9 +420,11 @@ POD2MAN = $(POD2MAN_EXE)
 
 
 manifypods : pure_all  \
-	lib/mop/minus.pm
+	lib/mop/minus.pm \
+	lib/mop/minus/object.pm
 	$(NOECHO) $(POD2MAN) --section=3 --perm_rw=$(PERM_RW) \
-	  lib/mop/minus.pm $(INST_MAN3DIR)/mop::minus.$(MAN3EXT) 
+	  lib/mop/minus.pm $(INST_MAN3DIR)/mop::minus.$(MAN3EXT) \
+	  lib/mop/minus/object.pm $(INST_MAN3DIR)/mop::minus::object.$(MAN3EXT) 
 
 
 
@@ -476,7 +482,7 @@ realclean_subdirs :
 # Delete temporary files (via clean) and also delete dist files
 realclean purge ::  clean realclean_subdirs
 	- $(RM_F) \
-	  $(MAKEFILE_OLD) $(FIRST_MAKEFILE) 
+	  $(FIRST_MAKEFILE) $(MAKEFILE_OLD) 
 	- $(RM_RF) \
 	  $(DISTVNAME) 
 
@@ -504,7 +510,6 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - inc' >> META_new.yml
 	$(NOECHO) $(ECHO) 'requires:' >> META_new.yml
-	$(NOECHO) $(ECHO) '  Object::Simple: '\''3.13'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Parse::Keyword: '\''0.08'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'version: '\''0.01'\''' >> META_new.yml
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
@@ -543,7 +548,6 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      },' >> META_new.json
 	$(NOECHO) $(ECHO) '      "runtime" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
-	$(NOECHO) $(ECHO) '            "Object::Simple" : "3.13",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Parse::Keyword" : "0.08"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
 	$(NOECHO) $(ECHO) '      }' >> META_new.json
@@ -854,7 +858,6 @@ ppd :
 	$(NOECHO) $(ECHO) '    <ABSTRACT>mop minus proposal</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Yuki Kimoto&lt;kimoto.yuki@gmail.com&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE VERSION="3.13" NAME="Object::Simple" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Parse::Keyword" VERSION="0.08" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-5.20" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> $(DISTNAME).ppd
@@ -866,7 +869,8 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  lib/mop/minus.pm blib/lib/mop/minus.pm 
+	  lib/mop/minus.pm blib/lib/mop/minus.pm \
+	  lib/mop/minus/object.pm blib/lib/mop/minus/object.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

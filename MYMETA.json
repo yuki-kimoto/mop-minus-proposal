@@ -32,7 +32,6 @@
       },
       "runtime" : {
          "requires" : {
-            "Object::Simple" : "3.13",
             "Parse::Keyword" : "0.08"
          }
       }

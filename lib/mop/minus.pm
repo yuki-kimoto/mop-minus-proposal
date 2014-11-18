@@ -70,7 +70,7 @@ sub import {
   }
 
   {
-    my $code = "package $caller; use Object::Simple -base;";
+    my $code = "package $caller; use mop::minus::object -base;";
     eval $code;
     croak "Can't load $code:$@" if $@;
   }
@@ -93,7 +93,7 @@ sub extends {
   my $args_str = join(',', @args);
 
   {
-    my $code = "package $class; use Object::Simple $args_str;";
+    my $code = "package $class; use mop::minus::object $args_str;";
     eval $code;
     croak "Can't load $code:$@" if $@;
   }
@@ -156,10 +156,10 @@ sub with {
     my $code;
     if ($extends) {
       $DB::single = 1;
-      $code = qq/package $class; use Object::Simple -base => "$extends", $args_str;/;
+      $code = qq/package $class; use mop::minus::object -base => "$extends", $args_str;/;
     }
     else {
-      $code = "package $class; use Object::Simple $args_str;";
+      $code = "package $class; use mop::minus::object $args_str;";
     }
 
     eval $code;
@@ -337,10 +337,6 @@ mop::minus - mop minus proposal
 =head1 DESCRIPTION
 
 mop minus proposal
-
-=head1 SEE ALSO
-
-L<Object::Simple>
 
 =head1 AUTHOR
 
