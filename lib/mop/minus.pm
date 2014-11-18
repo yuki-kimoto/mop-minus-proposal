@@ -6,10 +6,10 @@ our $VERSION = '0.01';
 
 use strict;
 use warnings;
+use feature ();
 
 use Carp 'croak';
-
-use feature ();
+use mop::minus::object;
 
 use Parse::Keyword {
   extends => \&extends_parser,
@@ -20,27 +20,22 @@ use Parse::Keyword {
 sub import {
   my $class = shift;
   
+  # Caller package
   my $caller = caller;
   
-  no strict 'refs';
-  no warnings 'redefine';
-  *{"${caller}::extends"} = \&extends;
-  *{"${caller}::with"} = \&with;
+  # Subroutine signatures
+  feature->import('signatures');
+  warnings->unimport('experimental::signatures');
   
-  if ($] >= 5.020) {
-    feature->import('signatures');
-    warnings->unimport('experimental::signatures');
-  }
-
-  {
-    my $code = "package $caller; use mop::minus::object -base;";
-    eval $code;
-    croak "Can't load $code:$@" if $@;
-  }
-
+  # Inherit base class
   no strict 'refs';
+  @{"${caller}::ISA"} = ('mop::minus::object');
+  
+  # Register keywords
   no warnings 'redefine';
   *{"${caller}::has"} = \&has;
+  *{"${caller}::extends"} = \&extends;
+  *{"${caller}::with"} = \&with;
 }
 
 sub has {
