@@ -17,6 +17,32 @@ use Parse::Keyword {
   has => \&has_parser
 };
 
+sub import {
+  my $class = shift;
+  
+  my $caller = caller;
+  
+  no strict 'refs';
+  no warnings 'redefine';
+  *{"${caller}::extends"} = \&extends;
+  *{"${caller}::with"} = \&with;
+  
+  if ($] >= 5.020) {
+    feature->import('signatures');
+    warnings->unimport('experimental::signatures');
+  }
+
+  {
+    my $code = "package $caller; use mop::minus::object -base;";
+    eval $code;
+    croak "Can't load $code:$@" if $@;
+  }
+
+  no strict 'refs';
+  no warnings 'redefine';
+  *{"${caller}::has"} = \&has;
+}
+
 sub has {
   my ($class, $name, $default_exists, $default_code) = @_;
   
@@ -52,32 +78,6 @@ sub has_parser {
     lex_read;
 
     return (sub { ($caller, $name, $default_exists, $default) }, 1);
-}
-
-sub import {
-  my $class = shift;
-  
-  my $caller = caller;
-  
-  no strict 'refs';
-  no warnings 'redefine';
-  *{"${caller}::extends"} = \&extends;
-  *{"${caller}::with"} = \&with;
-  
-  if ($] >= 5.020) {
-    feature->import('signatures');
-    warnings->unimport('experimental::signatures');
-  }
-
-  {
-    my $code = "package $caller; use mop::minus::object -base;";
-    eval $code;
-    croak "Can't load $code:$@" if $@;
-  }
-
-  no strict 'refs';
-  no warnings 'redefine';
-  *{"${caller}::has"} = \&has;
 }
 
 sub extends {
