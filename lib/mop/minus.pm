@@ -14,6 +14,7 @@ package mop::minus {
     with => \&with_parser,
     has => \&has_parser
   };
+  use Sub::Util 'subname';
 
   sub import {
     my $class = shift;
@@ -36,6 +37,21 @@ package mop::minus {
     *{"${caller}::has"} = \&has;
     *{"${caller}::extends"} = \&extends;
     *{"${caller}::with"} = \&with;
+    
+    # Register method callback
+    *{"${caller}::MODIFY_CODE_ATTRIBUTES"} = sub {
+      my ($class, $code_ref, $attr_name) = @_;
+      
+      if ($attr_name eq 'Method') {
+        &{"${caller}::MODIFY_CODE_METHOD_ATTRIBUTES"}($class, $code_ref, $attr_name);
+      }
+      
+      return;
+    };
+    *{"${caller}::MODIFY_CODE_METHOD_ATTRIBUTES"} = sub {
+      my ($class, $code_ref, $attr_name) = @_;
+      my $method_name = subname $code_ref;
+    };
   }
 
   sub create_accessor {
@@ -330,7 +346,7 @@ mop::minus - mop minus proposal
     has z = 0;
     
     # will be "method clear { ... }"
-    sub clear ($self) {
+    sub clear : Method ($self) {
       $self->z(0);
     }
   }
@@ -345,7 +361,7 @@ mop::minus - mop minus proposal
     has y = 0;
     
     # will be "method clear { ... }"
-    sub clear ($self) {
+    sub clear : Method ($self) {
       $self->x(0);
       $self->y(0);
     }
@@ -356,8 +372,9 @@ mop::minus - mop minus proposal
   # Role1.pm
   package Role1 {
     use mop::minus;
-
-    sub foo {
+    
+    # will be "method foo { ... }"
+    sub foo : Method {
       return 'foo';
     }
   }
@@ -368,7 +385,8 @@ mop::minus - mop minus proposal
   package Role1 {
     use mop::minus;
 
-    sub bar {
+    # will be "method bar { ... }"
+    sub bar : Method {
       return 'bar';
     }
   }

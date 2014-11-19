@@ -1,7 +1,8 @@
 package Role1 {
   use mop::minus;
-
-  sub foo {
+  
+  # will be "method foo { ... }"
+  sub foo : Method {
     return 'foo';
   }
 }

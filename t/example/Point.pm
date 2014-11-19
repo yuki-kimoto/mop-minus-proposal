@@ -5,8 +5,9 @@ package Point {
   
   has x = sub { $x_default };
   has y;
-
-  sub clear ($self) {
+  
+  # will be "method clear { ... }"
+  sub clear : Method ($self) {
     $self->x(0);
     $self->y(0);
   }

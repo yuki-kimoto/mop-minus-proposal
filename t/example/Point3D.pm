@@ -6,7 +6,8 @@ package Point3D {
   
   has z = 2;
   
-  sub clear ($self) {
+  # will be "method clear { ... }"
+  sub clear : Method ($self) {
     $self->z(0);
   }
 }
