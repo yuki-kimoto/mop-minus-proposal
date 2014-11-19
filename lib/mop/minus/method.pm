@@ -15,3 +15,12 @@ package mop::minus::method {
 }
 
 1;
+
+=head1 NAME
+
+mop::minus::method - method information
+
+=head1 ATTRIBUTES
+
+=head2 name
+

@@ -39,3 +39,15 @@ package mop::minus::attribute {
 }
 
 1;
+
+=head1 NAME
+
+mop::minus::attribute - attribute information
+
+=head1 ATTRIBUTES
+
+=head2 name
+
+=head2 default
+
+=head2 exists_default

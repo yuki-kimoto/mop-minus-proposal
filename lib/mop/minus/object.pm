@@ -13,4 +13,3 @@ package mop::minus::object {
 =head1 NAME
 
 mop::minus::object - base object
-

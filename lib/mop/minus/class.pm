@@ -87,3 +87,27 @@ package mop::minus::class {
 }
 
 1;
+
+=head1 NAME
+
+mop::minus::class - class information
+
+=head1 ATTRIBUTES
+
+=head2 name
+
+=head2 super_class_name
+
+=head2 methods
+
+=head2 attributes
+
+=head2 role_names
+
+=head1 METHODS
+
+=head2 get_super_class
+  
+=head2 get_roles
+
+=head2 get_linear_isa
