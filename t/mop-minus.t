@@ -28,7 +28,8 @@ use lib 't/mop-minus';
       use mop::minus;
       
       with Role1, Role2;
-    
+      
+      # will be "method role1_method1 { ... }"
       sub role1_method1 : Method ($self) {
         
         return 'a ' . $self->SUPER::role1_method1();
