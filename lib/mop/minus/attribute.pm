@@ -1,8 +1,5 @@
 package mop::minus::attribute {
-  use mop::minus;
-  
-  has name;
-  has default;
+  use base 'mop::minus::object';
 }
 
 1;

@@ -197,3 +197,4 @@ is($o->m1, 1);
 # default;
 $o = T1->new;
 is($o->m4, 5);
+

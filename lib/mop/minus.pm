@@ -3,7 +3,12 @@ use v5.20;
 use strict;
 use warnings;
 use feature ();
+
 use mop::minus::object;
+use mop::minus::class;
+use mop::minus::role;
+use mop::minus::attribute;
+use mop::minus::method;
 
 package mop::minus {
   our $VERSION = '0.01';
@@ -15,12 +20,15 @@ package mop::minus {
     has => \&has_parser
   };
   use Sub::Util 'subname';
+  
+  # Meta information
+  my $meta = {};
 
   sub import {
-    my $class = shift;
+    my $self = shift;
     
-    # Caller package
-    my $caller = caller;
+    # Caller class
+    my $class = caller;
     
     # Feature import
     strict->import;
@@ -30,28 +38,45 @@ package mop::minus {
     
     # Inherit base class
     no strict 'refs';
-    @{"${caller}::ISA"} = ('mop::minus::object');
+    @{"${class}::ISA"} = ('mop::minus::object');
     
     # Register keywords
     no warnings 'redefine';
-    *{"${caller}::has"} = \&has;
-    *{"${caller}::extends"} = \&extends;
-    *{"${caller}::with"} = \&with;
+    *{"${class}::has"} = \&has;
+    *{"${class}::extends"} = \&extends;
+    *{"${class}::with"} = \&with;
     
-    # Register method callback
-    *{"${caller}::MODIFY_CODE_ATTRIBUTES"} = sub {
+    # Method callback
+    *{"${class}::MODIFY_CODE_ATTRIBUTES"} = sub {
       my ($class, $code_ref, $attr_name) = @_;
       
       if ($attr_name eq 'Method') {
-        &{"${caller}::MODIFY_CODE_METHOD_ATTRIBUTES"}($class, $code_ref, $attr_name);
+        &{"${class}::MODIFY_CODE_METHOD_ATTRIBUTES"}($class, $code_ref, $attr_name);
       }
       
       return;
     };
-    *{"${caller}::MODIFY_CODE_METHOD_ATTRIBUTES"} = sub {
+    *{"${class}::MODIFY_CODE_METHOD_ATTRIBUTES"} = sub {
       my ($class, $code_ref, $attr_name) = @_;
       my $method_name = subname $code_ref;
+
+      # Register method
+      my $method_meta = mop::minus::method->new(name => $method_name);
+      $meta->{$class}{methods} ||= {};
+      $meta->{$class}{methods}{$method_name} = $method_meta;
     };
+    
+    # Add class information
+    my $class_meta = mop::minus::class->new(name => $class);
+    $meta->{$class} = $class_meta;
+  }
+  
+  sub meta {
+    my $class_name = shift;
+    
+    $class_name = ref $class_name if ref $class_name;
+    
+    return $meta->{$class_name};
   }
 
   sub create_accessor {
@@ -98,12 +123,23 @@ package mop::minus {
   sub has {
     my ($class, $name, $default_exists, $default_code) = @_;
     
+    # Create accessor
     if ($default_exists) {
       create_accessor($class, $name, {default => $default_code->()});
     }
     else {
       create_accessor($class, $name);
     }
+    
+    # Register method
+    my $method_meta = mop::minus::method->new(name => $name);
+    $meta->{$class}{methods} ||= {};
+    $meta->{$class}{methods}{$name} = $method_meta;
+    
+    # Register attribute
+    my $attribute_meta = mop::minus::attribute->new(name => $name);
+    $meta->{$class}{attributes} ||= {};
+    $meta->{$class}{attributes}{$name} = $attribute_meta;
   }
 
   sub has_parser {
@@ -137,14 +173,17 @@ package mop::minus {
     
     # Class infomation
     my $class = $class_info->{class};
-    my $base_class = $class_info->{extends};
+    my $super_class = $class_info->{extends};
     
     # Extends
-    my $base_class_path = $base_class;
-    $base_class_path =~ s/::|'/\//g;
-    require "$base_class_path.pm";
+    my $super_class_path = $super_class;
+    $super_class_path =~ s/::|'/\//g;
+    require "$super_class_path.pm";
     no strict 'refs';
-    @{"${class }::ISA"} = ($base_class);
+    @{"${class }::ISA"} = ($super_class);
+    
+    # Register super class
+    $meta->{$class}{super_class} = $super_class;
     
     return 1;
   }
@@ -178,7 +217,8 @@ package mop::minus {
     
     my $class = $class_info->{class};
     my $roles = $class_info->{with};
-
+    
+    my $real_roles = [];
     # Roles
     for my $role (@$roles) {
       
@@ -192,13 +232,15 @@ package mop::minus {
         or croak "Can't open file $role_path: $!";
       
       my $role_content = do { local $/; <$fh> };
-      my $role_for_file = "mop::minus::role::id${role_id}::$role";
+      my $role_for_file = "mop/minus/role/id${role_id}/$role.pm";
       $role_id++;
       $INC{$role_for_file} = undef;
       
       my $role_for = $role_for_file;
       $role_for =~ s/\//::/g;
       $role_for =~ s/\.pm$//;
+      
+      push @$real_roles, $role_for;
       
       my $role_for_content = $role_content;
       if ($role_for_content =~ s/package\s+([a-zA-Z0-9:]+)/package $role_for/) {
@@ -218,6 +260,9 @@ package mop::minus {
         }
       }
     }
+
+    # Register roles
+    $meta->{$class}{roles} = $real_roles;
     
     return 1;
   }

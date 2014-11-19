@@ -1,9 +1,5 @@
 package mop::minus::class {
-  use mop::minus;
-  
-  has name;
-  has super_class;
-  has roles = sub { [] };
+  use base 'mop::minus::object';
 }
 
 1;

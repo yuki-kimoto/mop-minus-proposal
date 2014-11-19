@@ -1,7 +1,5 @@
 package mop::minus::role {
-  use mop::minus;
-  
-  has name;
+  use base 'mop::minus::object';
 }
 
 1;
