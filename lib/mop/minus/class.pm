@@ -35,7 +35,7 @@ package mop::minus::class {
       return $self;
     }
     
-    return $self->{methods} || {};
+    return $self->{methods} ||= {};
   }
 
   sub role_names {
@@ -47,7 +47,7 @@ package mop::minus::class {
       return $self;
     }
     
-    return $self->{roles} || [];
+    return $self->{roles} ||= [];
   }
 
   sub attributes {

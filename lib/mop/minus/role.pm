@@ -22,7 +22,7 @@ package mop::minus::role {
       return $self;
     }
     
-    return $self->{methods} || {};
+    return $self->{methods} ||= {};
   }
 
   sub attributes {

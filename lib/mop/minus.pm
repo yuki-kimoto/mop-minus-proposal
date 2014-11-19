@@ -23,6 +23,17 @@ package mop::minus {
   
   # Meta information
   my $meta = {};
+  sub meta {
+    if (@_) {
+      my $class_name = shift;
+      
+      $class_name = ref $class_name if ref $class_name;
+      
+      return $meta->{$class_name};
+    }
+    
+    return $meta;
+  }
 
   sub import {
     my $self = shift;
@@ -63,32 +74,21 @@ package mop::minus {
 
       # Register method
       my $method_meta = mop::minus::method->new(name => $method_name);
-      $meta->{$class}{methods} ||= {};
-      $meta->{$class}{methods}{$method_name} = $method_meta;
+      mop::minus::meta($class)->methods->{$method_name} = $method_meta;
+      1;
     };
     
     # Add class information
     if ($class =~ /^mop::minus::role::id[0-9]+::/) {
-      $meta->{$class} = mop::minus::role->new(name => $class)
+      mop::minus::meta->{$class} = mop::minus::role->new(name => $class)
     }
     else {
-      $meta->{$class} = mop::minus::class->new(name => $class);
+      mop::minus::meta->{$class} = mop::minus::class->new(name => $class);
     }
+    
+    1;
   }
   
-  sub meta {
-    if (@_) {
-      my $class_name = shift;
-      
-      $class_name = ref $class_name if ref $class_name;
-      
-      return $meta->{$class_name};
-    }
-    else {
-      return $meta;
-    }
-  }
-
   sub create_accessor {
     my ($class, $attr, $opt) = @_;
     
@@ -135,19 +135,17 @@ package mop::minus {
     
     # Register method
     my $method_meta = mop::minus::method->new(name => $name);
-    $meta->{$class}{methods} ||= {};
-    $meta->{$class}{methods}{$name} = $method_meta;
+    mop::minus::meta($class)->methods->{$name} = $method_meta;
     
     # Register attribute
     my $attribute_meta = mop::minus::attribute->new(name => $name);
-    $meta->{$class}{attributes} ||= {};
-    $meta->{$class}{attributes}{$name} = $attribute_meta;
+    mop::minus::meta($class)->attributes->{$name} = $attribute_meta;
 
     # Create accessor
     if ($default_exists) {
       create_accessor($class, $name, {default => $default_code->()});
-      $meta->{$class}{attributes}{$name}{exists_default} = 1;
-      $meta->{$class}{attributes}{$name}{default} = $default_code->();
+      mop::minus::meta($class)->attributes->{$name}->exists_default(1);
+      mop::minus::meta($class)->attributes->{$name}->default($default_code->());
     }
     else {
       create_accessor($class, $name);
@@ -195,7 +193,7 @@ package mop::minus {
     @{"${class }::ISA"} = ($super_class);
     
     # Register super class
-    $meta->{$class}{super_class} = $super_class;
+    mop::minus::meta($class)->super_class_name($super_class);
     
     return 1;
   }
@@ -274,7 +272,7 @@ package mop::minus {
     }
 
     # Register role names to class
-    $meta->{$class}{roles} = $real_roles;
+    mop::minus::meta($class)->role_names($real_roles);
     
     return 1;
   }
