@@ -1,6 +1,8 @@
 package Role1 {
   use mop::minus;
   
+  has Role1_attr1;
+  
   # will be "method role1_method1 { ... }
   sub role1_method1 : Method {
     return 'role1_method1';

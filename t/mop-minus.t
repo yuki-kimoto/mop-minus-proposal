@@ -198,24 +198,85 @@ is($o->m1, 1);
 $o = T1->new;
 is($o->m4, 5);
 
-# meta
+# meta class
 {
-  # meta - pass class name
+  # meta class - pass class name
   is(mop::minus::meta('T1')->name, 'T1');
   
-  # meta - pass object
+  # meta class - pass object
   my $t1 = T1->new;
   is(mop::minus::meta($t1)->name, 'T1');
   
-  # meta - method
+  # meta class - method
   is(mop::minus::meta('T1')->methods->{T1_method1}->name, 'T1_method1');
 
-  # meta - method(attribute)
+  # meta class - method by has
   is(mop::minus::meta('T1')->methods->{m1}->name, 'm1');
   
-  # meta - methods
+  # meta class - methods
   is_deeply(
     [sort keys %{mop::minus::meta('T1')->methods}],
     ['T1_method1', 'm1', 'm2', 'm3', 'm4']
   );
+
+  # meta class - attribute
+  is(mop::minus::meta('T1')->attributes->{m1}->name, 'm1');
+
+  # meta class - attributes
+  is_deeply(
+    [sort keys %{mop::minus::meta('T1')->attributes}],
+    ['m1', 'm2', 'm3', 'm4']
+  );
+  
+  # meta class - role_names
+  like(mop::minus::meta('T9')->role_names->[0], qr/mop::minus::role::id[0-9]+::Role1/);
+  like(mop::minus::meta('T9')->role_names->[1], qr/mop::minus::role::id[0-9]+::Role2/);
+  
+  # meta class - get_linear_isa
+  is(mop::minus::meta('T9')->get_linear_isa->[0], 'T9');
+  like(mop::minus::meta('T9')->get_linear_isa->[1], qr/mop::minus::role::id[0-9]+::Role2/);
+  like(mop::minus::meta('T9')->get_linear_isa->[2], qr/mop::minus::role::id[0-9]+::Role1/);
+  is(mop::minus::meta('T9')->get_linear_isa->[3], 'T2');
+}
+
+# meta role
+{
+  # meta role - name
+  {
+    my $role_name = mop::minus::meta('T9')->role_names->[0];
+    is(mop::minus::meta($role_name)->name, $role_name);
+  }
+  
+  # meta role - get_original_name
+  {
+    my $role_name = mop::minus::meta('T9')->role_names->[0];
+    is(mop::minus::meta($role_name)->get_original_name, 'Role1');
+  }
+
+  # meta role - methods
+  {
+    my $role_name = mop::minus::meta('T9')->role_names->[0];
+    is_deeply(
+      [sort keys %{mop::minus::meta($role_name)->methods}],
+      ['Role1_attr1', 'role1_method1', 'same_method1']
+    );
+  }
+
+  # meta role - attributes
+  {
+    my $role_name = mop::minus::meta('T9')->role_names->[0];
+    is_deeply(
+      [sort keys %{mop::minus::meta($role_name)->attributes}],
+      ['Role1_attr1']
+    );
+  }
+}
+
+# meta attributes
+{
+  # meta attributes - default
+  ok(!mop::minus::meta('T1')->attributes->{m1}->exists_default);
+  ok(!defined mop::minus::meta('T1')->attributes->{m1}->default);
+  ok(mop::minus::meta('T1')->attributes->{m3}->exists_default);
+  is(mop::minus::meta('T1')->attributes->{m3}->default, 5);
 }

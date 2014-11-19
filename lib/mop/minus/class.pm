@@ -1,4 +1,5 @@
 package mop::minus::class {
+  use mro ();
   use base 'mop::minus::object';
   
   sub name {
@@ -11,6 +12,18 @@ package mop::minus::class {
     }
     
     return $self->{name};
+  }
+  
+  sub super_class_name {
+    my $self = shift;
+    
+    if (@_) {
+      $self->{super_class_name} = $_[0];
+      
+      return $self;
+    }
+    
+    return $self->{super_class_name};
   }
 
   sub methods {
@@ -48,7 +61,11 @@ package mop::minus::class {
     
     return $self->{attributes} ||= {};
   }
-
+  
+  sub get_linear_isa {
+    my $self = shift;
+    return mro::get_linear_isa($self->name);
+  }
 }
 
 1;

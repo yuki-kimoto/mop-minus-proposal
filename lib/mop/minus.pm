@@ -68,8 +68,12 @@ package mop::minus {
     };
     
     # Add class information
-    my $class_meta = mop::minus::class->new(name => $class);
-    $meta->{$class} = $class_meta;
+    if ($class =~ /^mop::minus::role::id[0-9]+::/) {
+      $meta->{$class} = mop::minus::role->new(name => $class)
+    }
+    else {
+      $meta->{$class} = mop::minus::class->new(name => $class);
+    }
   }
   
   sub meta {
@@ -129,14 +133,6 @@ package mop::minus {
   sub has {
     my ($class, $name, $default_exists, $default_code) = @_;
     
-    # Create accessor
-    if ($default_exists) {
-      create_accessor($class, $name, {default => $default_code->()});
-    }
-    else {
-      create_accessor($class, $name);
-    }
-    
     # Register method
     my $method_meta = mop::minus::method->new(name => $name);
     $meta->{$class}{methods} ||= {};
@@ -146,6 +142,16 @@ package mop::minus {
     my $attribute_meta = mop::minus::attribute->new(name => $name);
     $meta->{$class}{attributes} ||= {};
     $meta->{$class}{attributes}{$name} = $attribute_meta;
+
+    # Create accessor
+    if ($default_exists) {
+      create_accessor($class, $name, {default => $default_code->()});
+      $meta->{$class}{attributes}{$name}{exists_default} = 1;
+      $meta->{$class}{attributes}{$name}{default} = $default_code->();
+    }
+    else {
+      create_accessor($class, $name);
+    }
   }
 
   sub has_parser {
@@ -267,7 +273,7 @@ package mop::minus {
       }
     }
 
-    # Register roles
+    # Register role names to class
     $meta->{$class}{roles} = $real_roles;
     
     return 1;
