@@ -198,3 +198,24 @@ is($o->m1, 1);
 $o = T1->new;
 is($o->m4, 5);
 
+# meta
+{
+  # meta - pass class name
+  is(mop::minus::meta('T1')->name, 'T1');
+  
+  # meta - pass object
+  my $t1 = T1->new;
+  is(mop::minus::meta($t1)->name, 'T1');
+  
+  # meta - method
+  is(mop::minus::meta('T1')->methods->{T1_method1}->name, 'T1_method1');
+
+  # meta - method(attribute)
+  is(mop::minus::meta('T1')->methods->{m1}->name, 'm1');
+  
+  # meta - methods
+  is_deeply(
+    [sort keys %{mop::minus::meta('T1')->methods}],
+    ['T1_method1', 'm1', 'm2', 'm3', 'm4']
+  );
+}

@@ -59,6 +59,7 @@ package mop::minus {
     *{"${class}::MODIFY_CODE_METHOD_ATTRIBUTES"} = sub {
       my ($class, $code_ref, $attr_name) = @_;
       my $method_name = subname $code_ref;
+      $method_name =~ s/^.+:://;
 
       # Register method
       my $method_meta = mop::minus::method->new(name => $method_name);
@@ -72,11 +73,16 @@ package mop::minus {
   }
   
   sub meta {
-    my $class_name = shift;
-    
-    $class_name = ref $class_name if ref $class_name;
-    
-    return $meta->{$class_name};
+    if (@_) {
+      my $class_name = shift;
+      
+      $class_name = ref $class_name if ref $class_name;
+      
+      return $meta->{$class_name};
+    }
+    else {
+      return $meta;
+    }
   }
 
   sub create_accessor {
