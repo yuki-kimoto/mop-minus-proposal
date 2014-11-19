@@ -190,12 +190,24 @@ PERL_ARCHIVE_AFTER =
 
 
 TO_INST_PM = lib/mop/minus.pm \
-	lib/mop/minus/object.pm
+	lib/mop/minus/attribute.pm \
+	lib/mop/minus/class.pm \
+	lib/mop/minus/method.pm \
+	lib/mop/minus/object.pm \
+	lib/mop/minus/role.pm
 
 PM_TO_BLIB = lib/mop/minus.pm \
 	blib/lib/mop/minus.pm \
+	lib/mop/minus/attribute.pm \
+	blib/lib/mop/minus/attribute.pm \
+	lib/mop/minus/class.pm \
+	blib/lib/mop/minus/class.pm \
+	lib/mop/minus/method.pm \
+	blib/lib/mop/minus/method.pm \
 	lib/mop/minus/object.pm \
-	blib/lib/mop/minus/object.pm
+	blib/lib/mop/minus/object.pm \
+	lib/mop/minus/role.pm \
+	blib/lib/mop/minus/role.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -482,7 +494,7 @@ realclean_subdirs :
 # Delete temporary files (via clean) and also delete dist files
 realclean purge ::  clean realclean_subdirs
 	- $(RM_F) \
-	  $(MAKEFILE_OLD) $(FIRST_MAKEFILE) 
+	  $(FIRST_MAKEFILE) $(MAKEFILE_OLD) 
 	- $(RM_RF) \
 	  $(DISTVNAME) 
 
@@ -860,7 +872,7 @@ ppd :
 	$(NOECHO) $(ECHO) '    <ABSTRACT>mop minus proposal</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Yuki Kimoto&lt;kimoto.yuki@gmail.com&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Parse::Keyword" VERSION="0.08" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE VERSION="0.08" NAME="Parse::Keyword" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE VERSION="1.41" NAME="Sub::Util" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-5.20" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> $(DISTNAME).ppd
@@ -873,7 +885,11 @@ ppd :
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
 	  lib/mop/minus.pm blib/lib/mop/minus.pm \
-	  lib/mop/minus/object.pm blib/lib/mop/minus/object.pm 
+	  lib/mop/minus/attribute.pm blib/lib/mop/minus/attribute.pm \
+	  lib/mop/minus/class.pm blib/lib/mop/minus/class.pm \
+	  lib/mop/minus/method.pm blib/lib/mop/minus/method.pm \
+	  lib/mop/minus/object.pm blib/lib/mop/minus/object.pm \
+	  lib/mop/minus/role.pm blib/lib/mop/minus/role.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 
