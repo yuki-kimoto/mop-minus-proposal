@@ -1,4 +1,5 @@
 package mop::minus::class {
+  require mop::minus;
   use mro ();
   use base 'mop::minus::object';
   
@@ -25,6 +26,12 @@ package mop::minus::class {
     
     return $self->{super_class_name};
   }
+  
+  sub get_super_class {
+    my $self = shift;
+    
+    return mop::minus::meta($self->super_class_name);
+  }
 
   sub methods {
     my $self = shift;
@@ -48,6 +55,17 @@ package mop::minus::class {
     }
     
     return $self->{roles} ||= [];
+  }
+  
+  sub get_roles {
+    my $self = shift;
+    
+    my $roles = [];
+    for my $role_name (@{$self->role_names}) {
+      push @$roles, mop::minus::meta($role_name);
+    }
+    
+    return $roles;
   }
 
   sub attributes {

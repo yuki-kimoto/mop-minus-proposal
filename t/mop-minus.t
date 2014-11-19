@@ -207,6 +207,12 @@ is($o->m4, 5);
   my $t1 = T1->new;
   is(mop::minus::meta($t1)->name, 'T1');
   
+  # meta class - super_class_name
+  is(mop::minus::meta('T9')->super_class_name, 'T2');
+
+  # meta class - get_super_class
+  is(mop::minus::meta('T9')->get_super_class->name, 'T2');
+  
   # meta class - method
   is(mop::minus::meta('T1')->methods->{T1_method1}->name, 'T1_method1');
 
@@ -231,6 +237,10 @@ is($o->m4, 5);
   # meta class - role_names
   like(mop::minus::meta('T9')->role_names->[0], qr/mop::minus::role::id[0-9]+::Role1/);
   like(mop::minus::meta('T9')->role_names->[1], qr/mop::minus::role::id[0-9]+::Role2/);
+
+  # meta class - get_roles
+  like(mop::minus::meta('T9')->get_roles->[0]->name, qr/mop::minus::role::id[0-9]+::Role1/);
+  like(mop::minus::meta('T9')->get_roles->[1]->name, qr/mop::minus::role::id[0-9]+::Role2/);
   
   # meta class - get_linear_isa
   is(mop::minus::meta('T9')->get_linear_isa->[0], 'T9');
