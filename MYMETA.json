@@ -32,7 +32,8 @@
       },
       "runtime" : {
          "requires" : {
-            "Parse::Keyword" : "0.08"
+            "Parse::Keyword" : "0.08",
+            "Sub::Util" : "1.41"
          }
       }
    },

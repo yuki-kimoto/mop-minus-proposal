@@ -19,7 +19,7 @@
 #     INC => q[-I.]
 #     LIBS => [q[]]
 #     NAME => q[mop::minus]
-#     PREREQ_PM => { Parse::Keyword=>q[0.08] }
+#     PREREQ_PM => { Parse::Keyword=>q[0.08], Sub::Util=>q[1.41] }
 #     TEST_REQUIRES => {  }
 #     VERSION_FROM => q[lib/mop/minus.pm]
 
@@ -482,7 +482,7 @@ realclean_subdirs :
 # Delete temporary files (via clean) and also delete dist files
 realclean purge ::  clean realclean_subdirs
 	- $(RM_F) \
-	  $(FIRST_MAKEFILE) $(MAKEFILE_OLD) 
+	  $(MAKEFILE_OLD) $(FIRST_MAKEFILE) 
 	- $(RM_RF) \
 	  $(DISTVNAME) 
 
@@ -511,6 +511,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '    - inc' >> META_new.yml
 	$(NOECHO) $(ECHO) 'requires:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Parse::Keyword: '\''0.08'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Sub::Util: '\''1.41'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'version: '\''0.01'\''' >> META_new.yml
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	$(NOECHO) $(ECHO) Generating META.json
@@ -548,7 +549,8 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      },' >> META_new.json
 	$(NOECHO) $(ECHO) '      "runtime" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
-	$(NOECHO) $(ECHO) '            "Parse::Keyword" : "0.08"' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Parse::Keyword" : "0.08",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Sub::Util" : "1.41"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
 	$(NOECHO) $(ECHO) '      }' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
@@ -859,6 +861,7 @@ ppd :
 	$(NOECHO) $(ECHO) '    <AUTHOR>Yuki Kimoto&lt;kimoto.yuki@gmail.com&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Parse::Keyword" VERSION="0.08" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE VERSION="1.41" NAME="Sub::Util" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-5.20" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> $(DISTNAME).ppd

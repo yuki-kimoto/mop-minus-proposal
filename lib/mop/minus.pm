@@ -5,8 +5,9 @@ use warnings;
 use feature ();
 use mop::minus::object;
 
-package mop::minus 0.01 {
-
+package mop::minus {
+  our $VERSION = '0.01';
+  
   use Carp 'croak';
   use Parse::Keyword {
     extends => \&extends_parser,

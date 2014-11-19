@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use FindBin;
-use lib "$FindBin::Bin/lib";
+use lib "$FindBin::Bin/example";
 
 use Test::More 'no_plan';
 BEGIN { use_ok('mop::minus') };

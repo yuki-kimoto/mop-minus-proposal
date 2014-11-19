@@ -19,4 +19,5 @@ no_index:
     - inc
 requires:
   Parse::Keyword: '0.08'
+  Sub::Util: '1.41'
 version: '0.01'
