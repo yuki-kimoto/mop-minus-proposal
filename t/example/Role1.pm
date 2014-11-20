@@ -2,7 +2,7 @@ package Role1 {
   use mop::minus;
   
   # will be "method foo { ... }"
-  sub foo : Method {
+  sub foo {
     return 'foo';
   }
 }

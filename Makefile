@@ -167,7 +167,10 @@ O_FILES  =
 H_FILES  = 
 MAN1PODS = 
 MAN3PODS = lib/mop/minus.pm \
-	lib/mop/minus/object.pm
+	lib/mop/minus/attribute.pm \
+	lib/mop/minus/class.pm \
+	lib/mop/minus/object.pm \
+	lib/mop/minus/role.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIB)$(DFSEP)Config.pm $(PERL_INC)$(DFSEP)config.h
@@ -192,7 +195,6 @@ PERL_ARCHIVE_AFTER =
 TO_INST_PM = lib/mop/minus.pm \
 	lib/mop/minus/attribute.pm \
 	lib/mop/minus/class.pm \
-	lib/mop/minus/method.pm \
 	lib/mop/minus/object.pm \
 	lib/mop/minus/role.pm
 
@@ -202,8 +204,6 @@ PM_TO_BLIB = lib/mop/minus.pm \
 	blib/lib/mop/minus/attribute.pm \
 	lib/mop/minus/class.pm \
 	blib/lib/mop/minus/class.pm \
-	lib/mop/minus/method.pm \
-	blib/lib/mop/minus/method.pm \
 	lib/mop/minus/object.pm \
 	blib/lib/mop/minus/object.pm \
 	lib/mop/minus/role.pm \
@@ -433,10 +433,16 @@ POD2MAN = $(POD2MAN_EXE)
 
 manifypods : pure_all  \
 	lib/mop/minus.pm \
-	lib/mop/minus/object.pm
+	lib/mop/minus/attribute.pm \
+	lib/mop/minus/class.pm \
+	lib/mop/minus/object.pm \
+	lib/mop/minus/role.pm
 	$(NOECHO) $(POD2MAN) --section=3 --perm_rw=$(PERM_RW) \
 	  lib/mop/minus.pm $(INST_MAN3DIR)/mop::minus.$(MAN3EXT) \
-	  lib/mop/minus/object.pm $(INST_MAN3DIR)/mop::minus::object.$(MAN3EXT) 
+	  lib/mop/minus/attribute.pm $(INST_MAN3DIR)/mop::minus::attribute.$(MAN3EXT) \
+	  lib/mop/minus/class.pm $(INST_MAN3DIR)/mop::minus::class.$(MAN3EXT) \
+	  lib/mop/minus/object.pm $(INST_MAN3DIR)/mop::minus::object.$(MAN3EXT) \
+	  lib/mop/minus/role.pm $(INST_MAN3DIR)/mop::minus::role.$(MAN3EXT) 
 
 
 
@@ -494,7 +500,7 @@ realclean_subdirs :
 # Delete temporary files (via clean) and also delete dist files
 realclean purge ::  clean realclean_subdirs
 	- $(RM_F) \
-	  $(FIRST_MAKEFILE) $(MAKEFILE_OLD) 
+	  $(MAKEFILE_OLD) $(FIRST_MAKEFILE) 
 	- $(RM_RF) \
 	  $(DISTVNAME) 
 
@@ -872,7 +878,7 @@ ppd :
 	$(NOECHO) $(ECHO) '    <ABSTRACT>mop minus proposal</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Yuki Kimoto&lt;kimoto.yuki@gmail.com&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE VERSION="0.08" NAME="Parse::Keyword" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Parse::Keyword" VERSION="0.08" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE VERSION="1.41" NAME="Sub::Util" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-5.20" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> $(DISTNAME).ppd
@@ -887,7 +893,6 @@ pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	  lib/mop/minus.pm blib/lib/mop/minus.pm \
 	  lib/mop/minus/attribute.pm blib/lib/mop/minus/attribute.pm \
 	  lib/mop/minus/class.pm blib/lib/mop/minus/class.pm \
-	  lib/mop/minus/method.pm blib/lib/mop/minus/method.pm \
 	  lib/mop/minus/object.pm blib/lib/mop/minus/object.pm \
 	  lib/mop/minus/role.pm blib/lib/mop/minus/role.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib

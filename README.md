@@ -210,7 +210,7 @@ The following single inheritance structuure is created.
     |
     MyClass
 
-### method keyword - define method (In current implementation, this is not implemented)
+### method keyword - define method (this is not yet implemented in Perl core)
 
     package MyClass {
       use mop::minus;
@@ -300,3 +300,49 @@ This change read-write-accessor to the following one.
     method DESTORY {
       ...
     }
+
+## About Meta Object Protocol
+
+Currently mop::minus implement class meta information utility in class, attribute, role except methods.
+    
+    my $class = mop::minus::meta('MyClass');
+    my $attributes = mop::minus::meta('MyClass')->attributes;
+    my $roles = mop::minus::meta('MyClass')->role_names;
+    
+    # will be
+    # my $methods = mop::minus::meta('MyClass')->methods;
+
+In detail, see mop::minus::class, mop::minus::attribute, mop::minus::role.
+
+### Why we can't get method information easily in current Perl
+
+A. Perl don't distinguish subroutine and method
+
+Perl have symbol table. Symbol table contain method name, but in Perl, subroutine and method is equal. so we can't get methods information only.
+
+And Per can't distinguish the methods which belong to own class and the methods which is imported methods.
+
+B. Code attribute handler is one way to resolve this, but the implementation is not clean.
+
+Perl can set handler when subroutine is defined and the subroutine have code attribute.
+We can register method information by using this feature.
+    
+    use Sub::Util 'subname';
+    sub MODIFY_CODE_ATTRIBUTES{
+      my($class, $code_ref, $attr_name) = @_;
+      my $method_name = subname $code_ref;
+      
+      # Register method
+      # ...
+    }
+    
+    # "Method" is code attribute
+    sub foo : Method {
+      
+    }
+
+But I think this implementation is a little urgy.
+
+C. How to resolve this?
+
+My idea is that Perl core implement method keyword and save method imformation to some variable.

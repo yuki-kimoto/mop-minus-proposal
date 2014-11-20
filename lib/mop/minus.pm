@@ -8,7 +8,6 @@ use mop::minus::object;
 use mop::minus::class;
 use mop::minus::role;
 use mop::minus::attribute;
-use mop::minus::method;
 
 package mop::minus {
   our $VERSION = '0.01';
@@ -57,27 +56,6 @@ package mop::minus {
     *{"${class}::extends"} = \&extends;
     *{"${class}::with"} = \&with;
     
-    # Method callback
-    *{"${class}::MODIFY_CODE_ATTRIBUTES"} = sub {
-      my ($class, $code_ref, $attr_name) = @_;
-      
-      if ($attr_name eq 'Method') {
-        &{"${class}::MODIFY_CODE_METHOD_ATTRIBUTES"}($class, $code_ref, $attr_name);
-      }
-      
-      return;
-    };
-    *{"${class}::MODIFY_CODE_METHOD_ATTRIBUTES"} = sub {
-      my ($class, $code_ref, $attr_name) = @_;
-      my $method_name = subname $code_ref;
-      $method_name =~ s/^.+:://;
-
-      # Register method
-      my $method_meta = mop::minus::method->new(name => $method_name);
-      mop::minus::meta($class)->methods->{$method_name} = $method_meta;
-      1;
-    };
-    
     # Add class information
     if ($class =~ /^mop::minus::role::id[0-9]+::/) {
       mop::minus::meta->{$class} = mop::minus::role->new(name => $class)
@@ -85,8 +63,9 @@ package mop::minus {
     else {
       mop::minus::meta->{$class} = mop::minus::class->new(name => $class);
     }
-    
-    1;
+
+    # will be "Regsiter method"
+    # ...
   }
   
   sub create_accessor {
@@ -133,9 +112,8 @@ package mop::minus {
   sub has {
     my ($class, $name, $default_exists, $default_code) = @_;
     
-    # Register method
-    my $method_meta = mop::minus::method->new(name => $name);
-    mop::minus::meta($class)->methods->{$name} = $method_meta;
+    # will be "Regsiter method"
+    # ...
     
     # Register attribute
     my $attribute_meta = mop::minus::attribute->new(name => $name);
@@ -401,7 +379,7 @@ mop::minus - mop minus proposal
     has z = 0;
     
     # will be "method clear { ... }"
-    sub clear : Method ($self) {
+    sub clear ($self) {
       $self->z(0);
     }
   }
@@ -416,7 +394,7 @@ mop::minus - mop minus proposal
     has y = 0;
     
     # will be "method clear { ... }"
-    sub clear : Method ($self) {
+    sub clear ($self) {
       $self->x(0);
       $self->y(0);
     }
@@ -429,7 +407,7 @@ mop::minus - mop minus proposal
     use mop::minus;
     
     # will be "method foo { ... }"
-    sub foo : Method {
+    sub foo {
       return 'foo';
     }
   }
@@ -441,7 +419,7 @@ mop::minus - mop minus proposal
     use mop::minus;
 
     # will be "method bar { ... }"
-    sub bar : Method {
+    sub bar {
       return 'bar';
     }
   }

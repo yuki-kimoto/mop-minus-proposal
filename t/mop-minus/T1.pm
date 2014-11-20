@@ -6,7 +6,7 @@ package T1 {
   has m3 = 5;
   has m4 = sub ($self) { $self->m3 };
   
-  sub T1_method1 : Method {
+  sub T1_method1 {
     ...
   }
 }

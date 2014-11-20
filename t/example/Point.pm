@@ -7,7 +7,7 @@ package Point {
   has y;
   
   # will be "method clear { ... }"
-  sub clear : Method ($self) {
+  sub clear ($self) {
     $self->x(0);
     $self->y(0);
   }

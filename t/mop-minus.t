@@ -30,7 +30,7 @@ use lib 't/mop-minus';
       with Role1, Role2;
       
       # will be "method role1_method1 { ... }"
-      sub role1_method1 : Method ($self) {
+      sub role1_method1 ($self) {
         
         return 'a ' . $self->SUPER::role1_method1();
       }
@@ -213,18 +213,6 @@ is($o->m4, 5);
 
   # meta class - get_super_class
   is(mop::minus::meta('T9')->get_super_class->name, 'T2');
-  
-  # meta class - method
-  is(mop::minus::meta('T1')->methods->{T1_method1}->name, 'T1_method1');
-
-  # meta class - method by has
-  is(mop::minus::meta('T1')->methods->{m1}->name, 'm1');
-  
-  # meta class - methods
-  is_deeply(
-    [sort keys %{mop::minus::meta('T1')->methods}],
-    ['T1_method1', 'm1', 'm2', 'm3', 'm4']
-  );
 
   # meta class - attribute
   is(mop::minus::meta('T1')->attributes->{m1}->name, 'm1');
@@ -262,15 +250,6 @@ is($o->m4, 5);
   {
     my $role_name = mop::minus::meta('T9')->role_names->[0];
     is(mop::minus::meta($role_name)->get_original_name, 'Role1');
-  }
-
-  # meta role - methods
-  {
-    my $role_name = mop::minus::meta('T9')->role_names->[0];
-    is_deeply(
-      [sort keys %{mop::minus::meta($role_name)->methods}],
-      ['Role1_attr1', 'role1_method1', 'same_method1']
-    );
   }
 
   # meta role - attributes
