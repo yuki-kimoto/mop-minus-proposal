@@ -56,7 +56,7 @@ package mop::minus {
     *{"${class}::with"} = \&with;
     
     # Add class information
-    if ($class =~ /^mop::minus::role::id[0-9]+::/) {
+    if ($class =~ /^mop::minus::role::id[0-9]+$/) {
       mop::minus::meta->{$class} = mop::minus::role->new(name => $class)
     }
     else {
@@ -219,15 +219,12 @@ package mop::minus {
         or croak "Can't open file $role_path: $!";
       
       my $role_content = do { local $/; <$fh> };
-      my $role_for_file = "mop/minus/role/id${role_id}/$role.pm";
+      my $role_for_file = "mop/minus/role/id${role_id}.pm";
       $role_id++;
-      $INC{$role_for_file} = undef;
       
       my $role_for = $role_for_file;
       $role_for =~ s/\//::/g;
       $role_for =~ s/\.pm$//;
-      
-      push @$real_roles, $role_for;
       
       my $role_for_content = $role_content;
       if ($role_for_content =~ s/package\s+([a-zA-Z0-9:]+)/package $role_for/) {
@@ -235,8 +232,10 @@ package mop::minus {
         croak $@ if $@;
       }
       else {
-        croak "Can't clone $role";
+        croak "Can't inclue $role";
       }
+      mop::minus::meta($role_for)->original_name($role);
+      push @$real_roles, $role_for;
       
       {
         no strict 'refs';

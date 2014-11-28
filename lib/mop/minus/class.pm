@@ -33,18 +33,6 @@ package mop::minus::class {
     return mop::minus::meta($self->super_class_name);
   }
 
-  sub methods {
-    my $self = shift;
-    
-    if (@_) {
-      $self->{methods} = $_[0];
-      
-      return $self;
-    }
-    
-    return $self->{methods} ||= {};
-  }
-
   sub role_names {
     my $self = shift;
     
