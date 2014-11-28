@@ -18,7 +18,6 @@ package mop::minus {
     with => \&with_parser,
     has => \&has_parser
   };
-  use Sub::Util 'subname';
   
   # Meta information
   my $meta = {};
