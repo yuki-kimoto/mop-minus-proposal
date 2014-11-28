@@ -163,6 +163,10 @@ package mop::minus {
     my $class = $class_info->{class};
     my $super_class = $class_info->{extends};
     
+    if (ref mop::minus::meta($class) eq 'mop::minus::role') {
+      croak "Can't extends super class in role";
+    }
+    
     # Extends
     my $super_class_path = $super_class;
     $super_class_path =~ s/::|'/\//g;
@@ -205,6 +209,10 @@ package mop::minus {
     
     my $class = $class_info->{class};
     my $roles = $class_info->{with};
+
+    if (ref mop::minus::meta($class) eq 'mop::minus::role') {
+      croak "Can't inculde roles in role";
+    }
     
     my $role_ids = [];
     # Roles
@@ -413,7 +421,7 @@ mop::minus - mop minus proposal
   1;
 
   # Role2.pm
-  package Role1 {
+  package Role2 {
     use mop::minus;
 
     # will be "method bar { ... }"

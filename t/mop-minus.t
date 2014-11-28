@@ -270,3 +270,22 @@ is($o->m4, 5);
   ok(mop::minus::meta('T1')->attributes->{m3}->exists_default);
   is(mop::minus::meta('T1')->attributes->{m3}->default, 5);
 }
+
+# Error
+{
+  eval {
+    package T10 {
+      use mop::minus;
+      with RoleError1;
+    }
+  };
+  like($@, qr/Can't extends super class in role/);
+
+  eval {
+    package T11 {
+      use mop::minus;
+      with RoleError2;
+    }
+  };
+  like($@, qr/Can't inculde roles in role/);
+}
