@@ -146,12 +146,13 @@ A. Role is class. Role inheritance structure is ignored.
         ...
       }
     }
-
+w2
 B. The way to include role is the following mechanism.
 
-**1** Role class is copied and renamed
-      
-    pckage mop::minus::role::idxxxxxx::SomeRole {
+**1** Role class is cloned and renamed to mop::minus::role::idxxxxxx
+    
+    # SomeRole
+    pckage mop::minus::role::idxxxxxx {
       use mop::minus;
       
       has p;
@@ -161,9 +162,10 @@ B. The way to include role is the following mechanism.
       }
     }
     
-**2** role class is copied and it extends base class of MyClass if exists.
+**2** Role class is cloned and it extends base class of MyClass if exists.
     
-    package mop::minus::role::idxxxxxx::SomeRole {
+    # SomeRole
+    package mop::minus::role::idxxxxxx {
       use mop::minus;
       extends BaseClass;
       
@@ -178,7 +180,9 @@ B. The way to include role is the following mechanism.
     
     package MyClass {
       use mop::minus;
-      extends mop::minus::role::idxxxxxx::SomeRole;
+      
+      # SomeRole
+      extends mop::minus::role::idxxxxxx;
       
       ...
     }
@@ -187,7 +191,7 @@ The following new single inheritance structure is created. Role id xxxxxx is inc
 
     BaseClass
     |
-    mop::minus::role::idxxxxxx::SomeRole
+    mop::minus::role::idxxxxxx(SomeRole)
     |
     MyClass
 
@@ -204,9 +208,9 @@ The following single inheritance structuure is created.
 
     BaseClass
     |
-    mop::minus::role::idxxxxxx::SomeRole1
+    mop::minus::role::idxxxxxx(SomeRole1)
     |
-    mop::minus::role::idxxxxxx::SomeRole2
+    mop::minus::role::idxxxxxx(SomeRole2)
     |
     MyClass
 

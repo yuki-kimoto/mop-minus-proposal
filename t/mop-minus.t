@@ -224,12 +224,12 @@ is($o->m4, 5);
   );
   
   # meta class - role_names
-  like(mop::minus::meta('T9')->role_names->[0], qr/mop::minus::role::id[0-9]+$/);
-  like(mop::minus::meta('T9')->role_names->[1], qr/mop::minus::role::id[0-9]+$/);
+  like(mop::minus::meta('T9')->role_ids->[0], qr/^[0-9]+$/);
+  like(mop::minus::meta('T9')->role_ids->[1], qr/^[0-9]+$/);
 
   # meta class - get_roles
-  like(mop::minus::meta('T9')->get_roles->[0]->name, qr/mop::minus::role::id[0-9]+$/);
-  like(mop::minus::meta('T9')->get_roles->[1]->name, qr/mop::minus::role::id[0-9]+$/);
+  is(mop::minus::meta('T9')->get_roles->[0]->name, 'Role1');
+  is(mop::minus::meta('T9')->get_roles->[1]->name, 'Role2');
   
   # meta class - get_linear_isa
   is(mop::minus::meta('T9')->get_linear_isa->[0], 'T9');
@@ -242,21 +242,21 @@ is($o->m4, 5);
 {
   # meta role - name
   {
-    my $role_name = mop::minus::meta('T9')->role_names->[0];
-    is(mop::minus::meta($role_name)->name, $role_name);
+    my $role_id = mop::minus::meta('T9')->role_ids->[0];
+    like(mop::minus::meta("mop::minus::role::id$role_id")->id, qr/^[0-9]+$/);
   }
   
-  # meta role - original_name
+  # meta role - name
   {
-    my $role_name = mop::minus::meta('T9')->role_names->[0];
-    is(mop::minus::meta($role_name)->original_name, 'Role1');
+    my $role_id = mop::minus::meta('T9')->role_ids->[0];
+    is(mop::minus::meta("mop::minus::role::id$role_id")->name, 'Role1');
   }
 
   # meta role - attributes
   {
-    my $role_name = mop::minus::meta('T9')->role_names->[0];
+    my $role_id = mop::minus::meta('T9')->role_ids->[0];
     is_deeply(
-      [sort keys %{mop::minus::meta($role_name)->attributes}],
+      [sort keys %{mop::minus::meta("mop::minus::role::id$role_id")->attributes}],
       ['Role1_attr1']
     );
   }

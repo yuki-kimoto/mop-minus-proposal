@@ -56,8 +56,9 @@ package mop::minus {
     *{"${class}::with"} = \&with;
     
     # Add class information
-    if ($class =~ /^mop::minus::role::id[0-9]+$/) {
-      mop::minus::meta->{$class} = mop::minus::role->new(name => $class)
+    if ($class =~ /^mop::minus::role::id([0-9]+)$/) {
+      my $role_id = $1;
+      mop::minus::meta->{$class} = mop::minus::role->new(id => $role_id)
     }
     else {
       mop::minus::meta->{$class} = mop::minus::class->new(name => $class);
@@ -205,10 +206,9 @@ package mop::minus {
     my $class = $class_info->{class};
     my $roles = $class_info->{with};
     
-    my $real_roles = [];
+    my $role_ids = [];
     # Roles
     for my $role (@$roles) {
-      
       my $role_file = $role;
       $role_file =~ s/::/\//g;
       $role_file .= ".pm";
@@ -220,7 +220,6 @@ package mop::minus {
       
       my $role_content = do { local $/; <$fh> };
       my $role_for_file = "mop/minus/role/id${role_id}.pm";
-      $role_id++;
       
       my $role_for = $role_for_file;
       $role_for =~ s/\//::/g;
@@ -234,8 +233,8 @@ package mop::minus {
       else {
         croak "Can't inclue $role";
       }
-      mop::minus::meta($role_for)->original_name($role);
-      push @$real_roles, $role_for;
+      mop::minus::meta($role_for)->name($role);
+      push @$role_ids, $role_id;
       
       {
         no strict 'refs';
@@ -245,10 +244,11 @@ package mop::minus {
           @{"${role_for}::ISA"} = ($parent);
         }
       }
+      $role_id++;
     }
 
     # Register role names to class
-    mop::minus::meta($class)->role_names($real_roles);
+    mop::minus::meta($class)->role_ids($role_ids);
     
     return 1;
   }

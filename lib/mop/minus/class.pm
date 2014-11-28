@@ -33,24 +33,24 @@ package mop::minus::class {
     return mop::minus::meta($self->super_class_name);
   }
 
-  sub role_names {
+  sub role_ids {
     my $self = shift;
     
     if (@_) {
-      $self->{roles} = $_[0];
+      $self->{role_ids} = $_[0];
       
       return $self;
     }
     
-    return $self->{roles} ||= [];
+    return $self->{role_ids} ||= [];
   }
   
   sub get_roles {
     my $self = shift;
     
     my $roles = [];
-    for my $role_name (@{$self->role_names}) {
-      push @$roles, mop::minus::meta($role_name);
+    for my $role_id (@{$self->role_ids}) {
+      push @$roles, mop::minus::meta("mop::minus::role::id$role_id");
     }
     
     return $roles;
