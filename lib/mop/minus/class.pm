@@ -78,24 +78,54 @@ package mop::minus::class {
 
 =head1 NAME
 
-mop::minus::class - class information
+mop::minus::class - Class
 
 =head1 ATTRIBUTES
 
 =head2 name
 
+  my $name = $class->name;
+  $class->name($name);
+
+Class name.
+
 =head2 super_class_name
 
-=head2 methods
+  my $super_class_name = $class->super_class_name;
+  $class->super_class_name($super_class_name);
+
+Super class name.
 
 =head2 attributes
 
-=head2 role_names
+  my $attributes = $class->attributes;
+  $class->attributes($attributes);
+
+Attributes.
+
+=head2 role_ids
+
+  my $role_ids = $class->role_ids;
+  $class->role_ids($role_ids);
+
+Role ids.
 
 =head1 METHODS
 
 =head2 get_super_class
+
+  my $super_class = $class->get_super_class;
+
+Get super class.
   
 =head2 get_roles
 
+  my $roles = $class->get_roles;
+
+Get roles.
+
 =head2 get_linear_isa
+
+  my $linear_isa = $class->get_linear_isa;
+
+Get linear isa.

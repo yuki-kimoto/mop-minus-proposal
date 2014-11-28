@@ -42,16 +42,21 @@ package mop::minus::role {
 
 =head1 NAME
 
-mop::minus::role - role information
+mop::minus::role - Role
 
 =head1 ATTRIBUTES
 
+=head2 id
+
+  my $id = $role->id;
+  $role->id($id);
+
 =head2 name
 
-=head2 methods
+  my $name = $role->name;
+  $role->name($name);
 
 =head2 attributes
 
-=head1 METHODS
-
-=head2 get_original_name
+  my $attributes = $role->attributes;
+  $role->attributes($attributes);

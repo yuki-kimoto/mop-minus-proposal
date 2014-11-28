@@ -42,12 +42,28 @@ package mop::minus::attribute {
 
 =head1 NAME
 
-mop::minus::attribute - attribute information
+mop::minus::attribute - Attribute
 
 =head1 ATTRIBUTES
 
 =head2 name
 
+  my $name = $attribute->name;
+  $attribute->name($name);
+
+Attribute name.
+
 =head2 default
 
+  my $default = $attribute->default;
+  $attributes->default($default);
+  
+Default value.
+
 =head2 exists_default
+
+  my $exists_default = $attribute->exists_default;
+  $attribute->exists_default($exists_default);
+
+Default value is exists or not.
+
