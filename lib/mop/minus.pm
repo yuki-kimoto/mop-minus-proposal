@@ -32,7 +32,7 @@ package mop::minus {
     
     return $meta;
   }
-
+  
   sub import {
     my $self = shift;
     
@@ -208,7 +208,7 @@ package mop::minus {
     my ($class_info) = @_;
     
     my $class = $class_info->{class};
-    my $roles = $class_info->{with};
+    my $original_role_names = $class_info->{with};
 
     if (ref mop::minus::meta($class) eq 'mop::minus::role') {
       croak "Can't inculde roles in role";
@@ -216,42 +216,36 @@ package mop::minus {
     
     my $role_names = [];
     # Roles
-    for my $role (@$roles) {
-      my $role_file = $role;
-      $role_file =~ s/::/\//g;
-      $role_file .= ".pm";
-      require $role_file;
+    for my $original_role_name (@$original_role_names) {
+      my $original_role_file = $original_role_name;
+      $original_role_file =~ s/::/\//g;
+      $original_role_file .= ".pm";
+      require $original_role_file;
       
-      my $role_path = $INC{$role_file};
-      open my $fh, '<', $role_path
-        or croak "Can't open file $role_path: $!";
+      my $original_role_path = $INC{$original_role_file};
+      open my $fh, '<', $original_role_path
+        or croak "Can't open file $original_role_path: $!";
       
-      my $role_content = do { local $/; <$fh> };
-      my $role_for_file = "mop/minus/role/id${role_id}.pm";
+      my $original_role_content = do { local $/; <$fh> };
+      my $role_name = "mop::minus::role::id${role_id}";
       
-      my $role_for = $role_for_file;
-      $role_for =~ s/\//::/g;
-      $role_for =~ s/\.pm$//;
-      
-      push @$role_names, $role_for;
-      
-      my $role_for_content = $role_content;
-      if ($role_for_content =~ s/package\s+([a-zA-Z0-9:]+)/package $role_for/) {
-        eval $role_for_content;
+      my $role_content = $original_role_content;
+      if ($role_content =~ s/package\s+([a-zA-Z0-9:]+)/package $role_name/) {
+        eval $role_content;
         croak $@ if $@;
       }
       else {
-        croak "Can't clone $role";
+        croak "Can't include $original_role_name to $class";
       }
-      mop::minus::meta($role_for)->original_name($role);
-      push @$role_names, $role_for;
+      mop::minus::meta($role_name)->original_name($original_role_name);
+      push @$role_names, $role_name;
       
       {
         no strict 'refs';
         my $parent = ${"${class}::ISA"}[0];
-        @{"${class}::ISA"} = ($role_for);
+        @{"${class}::ISA"} = ($role_name);
         if ($parent) {
-          @{"${role_for}::ISA"} = ($parent);
+          @{"${role_name}::ISA"} = ($parent);
         }
       }
       $role_id++;

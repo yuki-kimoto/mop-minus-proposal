@@ -39,6 +39,9 @@ use lib 't/mop-minus';
     {
       my $o = T8->new;
       is($o->role1_method1, 'a role1_method1');
+      my $roles = mop::minus::meta('T8')->roles;
+      is($roles->[0]->original_name, 'Role1');
+      is($roles->[1]->original_name, 'Role2');
     }
   }
 
