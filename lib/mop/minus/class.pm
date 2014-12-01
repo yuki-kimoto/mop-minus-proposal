@@ -27,30 +27,42 @@ package mop::minus::class {
     return $self->{super_class_name};
   }
   
-  sub get_super_class {
+  sub super_class {
     my $self = shift;
     
     return mop::minus::meta($self->super_class_name);
   }
 
-  sub role_ids {
+  sub methods {
     my $self = shift;
     
     if (@_) {
-      $self->{role_ids} = $_[0];
+      $self->{methods} = $_[0];
       
       return $self;
     }
     
-    return $self->{role_ids} ||= [];
+    return $self->{methods} ||= {};
+  }
+
+  sub role_names {
+    my $self = shift;
+    
+    if (@_) {
+      $self->{roles} = $_[0];
+      
+      return $self;
+    }
+    
+    return $self->{roles} ||= [];
   }
   
-  sub get_roles {
+  sub roles {
     my $self = shift;
     
     my $roles = [];
-    for my $role_id (@{$self->role_ids}) {
-      push @$roles, mop::minus::meta("mop::minus::role::id$role_id");
+    for my $role_name (@{$self->role_names}) {
+      push @$roles, mop::minus::meta($role_name);
     }
     
     return $roles;
@@ -68,7 +80,7 @@ package mop::minus::class {
     return $self->{attributes} ||= {};
   }
   
-  sub get_linear_isa {
+  sub linear_isa {
     my $self = shift;
     return mro::get_linear_isa($self->name);
   }
@@ -103,29 +115,29 @@ Super class name.
 
 Attributes.
 
-=head2 role_ids
+=head2 role_names
 
-  my $role_ids = $class->role_ids;
-  $class->role_ids($role_ids);
+  my $role_names = $class->role_names;
+  $class->role_names($role_names);
 
 Role ids.
 
 =head1 METHODS
 
-=head2 get_super_class
+=head2 super_class
 
-  my $super_class = $class->get_super_class;
+  my $super_class = $class->super_class;
 
 Get super class.
   
-=head2 get_roles
+=head2 roles
 
-  my $roles = $class->get_roles;
+  my $roles = $class->roles;
 
 Get roles.
 
-=head2 get_linear_isa
+=head2 linear_isa
 
-  my $linear_isa = $class->get_linear_isa;
+  my $linear_isa = $class->linear_isa;
 
 Get linear isa.

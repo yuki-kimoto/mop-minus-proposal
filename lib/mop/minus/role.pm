@@ -1,16 +1,16 @@
 package mop::minus::role {
   use base 'mop::minus::object';
 
-  sub id {
+  sub name {
     my $self = shift;
     
     if (@_) {
-      $self->{id} = $_[0];
+      $self->{name} = $_[0];
       
       return $self;
     }
     
-    return $self->{id};
+    return $self->{name};
   }
   
   sub attributes {
@@ -25,16 +25,16 @@ package mop::minus::role {
     return $self->{attributes} ||= {};
   }
 
-  sub name {
+  sub original_name {
     my $self = shift;
     
     if (@_) {
-      $self->{name} = $_[0];
+      $self->{original_name} = $_[0];
       
       return $self;
     }
     
-    return $self->{name} ||= {};
+    return $self->{original_name} ||= {};
   }
 }
 
@@ -46,15 +46,15 @@ mop::minus::role - Role
 
 =head1 ATTRIBUTES
 
-=head2 id
-
-  my $id = $role->id;
-  $role->id($id);
-
 =head2 name
 
   my $name = $role->name;
   $role->name($name);
+
+=head2 original_name
+
+  my $original_name = $role->original_name;
+  $role->original_name($original_name);
 
 =head2 attributes
 
