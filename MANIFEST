@@ -1,6 +1,9 @@
 Changes
 lib/mop/minus.pm
+lib/mop/minus/attribute.pm
+lib/mop/minus/class.pm
 lib/mop/minus/object.pm
+lib/mop/minus/role.pm
 Makefile.PL
 MANIFEST			This list of files
 README.md
@@ -9,9 +12,14 @@ t/example/Point.pm
 t/example/Point3D.pm
 t/example/Role1.pm
 t/example/Role2.pm
+t/mop-minus-attribute.t
+t/mop-minus-class.t
+t/mop-minus-role.t
 t/mop-minus.t
 t/mop-minus/Role1.pm
 t/mop-minus/Role2.pm
+t/mop-minus/RoleError1.pm
+t/mop-minus/RoleError2.pm
 t/mop-minus/T1.pm
 t/mop-minus/T2.pm
 t/mop-minus/T3.pm

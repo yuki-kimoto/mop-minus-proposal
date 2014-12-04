@@ -12,5 +12,3 @@ package Point {
     $self->y(0);
   }
 }
-
-1;

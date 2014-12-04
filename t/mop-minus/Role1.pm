@@ -13,5 +13,3 @@ package Role1 {
     return 'role1_same_method1';
   }
 }
-
-1;

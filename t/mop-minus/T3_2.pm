@@ -5,5 +5,3 @@ package T3_2 {
   
   has z = 3;
 }
-
-1;

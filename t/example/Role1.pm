@@ -6,5 +6,3 @@ package Role1 {
     return 'foo';
   }
 }
-
-1;

@@ -11,5 +11,3 @@ package Point3D {
     $self->z(0);
   }
 }
-
-1;

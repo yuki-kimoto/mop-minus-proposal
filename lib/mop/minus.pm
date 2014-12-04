@@ -3,6 +3,7 @@ use v5.20;
 use strict;
 use warnings;
 use feature ();
+use true ();
 
 use mop::minus::object;
 use mop::minus::class;
@@ -44,6 +45,7 @@ package mop::minus {
     warnings->import;
     feature->import('signatures');
     warnings->unimport('experimental::signatures');
+    true->import;
     
     # Inherit base class
     no strict 'refs';
@@ -386,8 +388,6 @@ mop::minus - mop minus proposal
     }
   }
   
-  1;
-  
   # Point.pm
   package Point {
     use mop::minus;
@@ -401,8 +401,6 @@ mop::minus - mop minus proposal
       $self->y(0);
     }
   }
-  
-  1;
 
   # Role1.pm
   package Role1 {
@@ -413,8 +411,6 @@ mop::minus - mop minus proposal
       return 'foo';
     }
   }
-  
-  1;
 
   # Role2.pm
   package Role2 {
@@ -425,8 +421,6 @@ mop::minus - mop minus proposal
       return 'bar';
     }
   }
-  
-  1;
 
 =head1 DESCRIPTION
 

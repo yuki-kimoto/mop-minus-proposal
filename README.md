@@ -28,8 +28,6 @@ This is Perl 5 mop minus proposal.
         $self->y(0);
       }
     }
-    
-    1;
 
     # Point3D.pm
     package Point3D {
@@ -46,8 +44,6 @@ This is Perl 5 mop minus proposal.
       }
     }
     
-    1;
-    
     # Role1.pm
     package Role1 {
       use mop::minus;
@@ -57,8 +53,6 @@ This is Perl 5 mop minus proposal.
         return 'foo';
       }
     }
-    
-    1;
 
     # Role2.pm
     package Role1 {
@@ -69,8 +63,6 @@ This is Perl 5 mop minus proposal.
         return 'bar';
       }
     }
-    
-    1;
 
     # main.pl
     use Point3D;
@@ -304,6 +296,17 @@ This change read-write-accessor to the following one.
     method DESTORY {
       ...
     }
+
+### Class return 1 automaticaly
+
+mop::minus class return 1 automatically at end of file.
+
+    package MyClass {
+      use mop::minus;
+      ...
+    }
+    
+    # You don't need to write 1;
 
 ## About Meta Object Protocol
 

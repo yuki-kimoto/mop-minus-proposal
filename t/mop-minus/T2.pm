@@ -4,5 +4,3 @@ package T2 {
   has x = 1;
   has y = 2;
 }
-
-1;

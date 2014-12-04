@@ -6,5 +6,3 @@ package Role2 {
     return 'bar';
   }
 }
-
-1;

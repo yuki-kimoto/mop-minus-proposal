@@ -15,5 +15,3 @@ my $class_meta = mop::minus::class->new;
   $class_meta->name('T1');
   is($class_meta->name, 'T1');
 }
-
-1;
