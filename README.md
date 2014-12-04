@@ -72,7 +72,7 @@ This is Perl 5 mop minus proposal.
 
 ## mop minus specification
 
-### use mop - define class.
+### use mop::minus - define class.
 
 A. using mop::minus module define class
 
@@ -138,7 +138,7 @@ A. Role is class. Role inheritance structure is ignored.
         ...
       }
     }
-w2
+
 B. The way to include role is the following mechanism.
 
 **1** Role class is cloned and renamed to mop::minus::role::idxxxxxx
