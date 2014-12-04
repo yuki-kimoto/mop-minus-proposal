@@ -10,8 +10,8 @@ This is Perl 5 mop minus proposal.
 
 ## Installation
 
-    curl -L https://github.com/yuki-kimoto/mop-minus-proposal/archive/latest.tar.gz > mop-minus-latest.tar.gz
-    cpanm mop-minus-latest.tar.gz
+    curl -L https://github.com/yuki-kimoto/mop-minus-proposal/archive/master.tar.gz > mop-minus-master.tar.gz
+    cpanm mop-minus-master.tar.gz
 
 ## Example
 
