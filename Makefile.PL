@@ -1,6 +1,8 @@
 use ExtUtils::MakeMaker;
+use strict;
+use warnings;
 
-WriteMakefile(
+my %WriteMakefileArgs = (
     NAME              => 'mop::minus',
     VERSION_FROM      => 'lib/mop/minus.pm',
     PREREQ_PM         => {
@@ -16,5 +18,19 @@ WriteMakefile(
     DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
     INC               => '-I.', # e.g., '-I. -I/usr/include/other'
 	# Un-comment this if you add C files to link with later:
-    # OBJECT            => '$(O_FILES)', # link all the C files too
+    OBJECT            => '$(O_FILES)', # link all the C files too
 );
+
+use Devel::CallParser 'callparser1_h', 'callparser_linkable';
+use File::Spec::Functions 'abs2rel';
+{
+    open my $fh, '>', 'callparser1.h' or die $!;
+    print { $fh } callparser1_h or die $!;
+    close $fh or die $!;
+}
+my @linkable = map { abs2rel($_) } callparser_linkable;
+unshift @linkable, '$(BASEEXT)$(OBJ_EXT)' if @linkable;
+$WriteMakefileArgs{OBJECT} = join(' ', @linkable) if @linkable;
+$WriteMakefileArgs{clean}{FILES} .= ' callparser1.h';
+
+WriteMakefile(%WriteMakefileArgs);
