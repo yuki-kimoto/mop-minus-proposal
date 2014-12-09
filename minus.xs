@@ -805,7 +805,7 @@ THX_current_meta_name(pTHX)
 
     ENTER;
     PUSHMARK(SP);
-    XPUSHs(get_sv("mop::minus::internals::syntax::CURRENT_META", 0));
+    XPUSHs(get_sv("mop::internals::syntax::CURRENT_META", 0));
     PUTBACK;
     call_method("name", G_SCALAR);
     SPAGAIN;
@@ -826,7 +826,7 @@ THX_current_attributes(pTHX)
 
     ENTER;
     PUSHMARK(SP);
-    XPUSHs(get_sv("mop::minus::internals::syntax::CURRENT_META", 0));
+    XPUSHs(get_sv("mop::internals::syntax::CURRENT_META", 0));
     PUTBACK;
     nattrs = call_method("attributes", G_ARRAY);
     SPAGAIN;
@@ -1173,7 +1173,7 @@ THX_parse_has(pTHX)
     OP *default_value = NULL, *ret;
     struct mop_trait **traits;
 
-    if (!SvOK(get_sv("mop::minus::internals::syntax::CURRENT_META", 0)))
+    if (!SvOK(get_sv("mop::internals::syntax::CURRENT_META", 0)))
         syntax_error(sv_2mortal(newSVpvs("has must be called from within a class or role block")));
 
     lex_read_space(0);
@@ -1423,7 +1423,7 @@ THX_parse_method(pTHX)
     OP *body, *body_ref, *invocantvarop, *invocantop;
     U8 errors;
 
-    if (!SvOK(get_sv("mop::minus::internals::syntax::CURRENT_META", 0)))
+    if (!SvOK(get_sv("mop::internals::syntax::CURRENT_META", 0)))
         syntax_error(sv_2mortal(newSVpvs("method must be called from within a class or role block")));
 
     lex_read_space(0);
@@ -1551,7 +1551,7 @@ THX_default_metaclass(pTHX_ bool is_class)
     HE *he = hv_fetch_ent(GvHV(PL_hintgv), hint_key_sv, 0, hint_key_hash);
 
     if (!he)
-        return is_class ? newSVpvs_share("mop::minus::class") : newSVpvs_share("mop::minus::role");
+        return is_class ? newSVpvs_share("mop::class") : newSVpvs_share("mop::role");
 
     return sv_2mortal(SvREFCNT_inc(HeVAL(he)));
 }
@@ -1573,7 +1573,7 @@ THX_new_meta(pTHX_ SV *metaclass, SV *name, SV *version, AV *roles, SV *supercla
     if (superclass)
         XPUSHs(superclass);
     PUTBACK;
-    call_pv("mop::minus::internals::syntax::new_meta", G_SCALAR);
+    call_pv("mop::internals::syntax::new_meta", G_SCALAR);
     SPAGAIN;
     ret = SvREFCNT_inc(POPs);
     PUTBACK;
@@ -1639,7 +1639,7 @@ THX_parse_namespace(pTHX_ bool is_class, SV **pkgp)
             av_push(classes_to_load, SvREFCNT_inc(extends));
         }
         else {
-            extends = sv_2mortal(newSVpvs("mop::minus::object"));
+            extends = sv_2mortal(newSVpvs("mop::object"));
         }
 
         lex_read_space(0);
@@ -1676,8 +1676,8 @@ THX_parse_namespace(pTHX_ bool is_class, SV **pkgp)
 
     /* NOTE: *not* sv_derived_from - that's broken because it doesn't check
      * for overridden isa methods */
-    if (!isa(metaclass, is_class ? "mop::minus::class" : "mop::minus::role"))
-        syntax_error(sv_2mortal(newSVpvf("The metaclass for %"SVf" (%"SVf") does not inherit from %s", SVfARG(name), SVfARG(metaclass), is_class ? "mop::minus::class" : "mop::minus::role")));
+    if (!isa(metaclass, is_class ? "mop::class" : "mop::role"))
+        syntax_error(sv_2mortal(newSVpvf("The metaclass for %"SVf" (%"SVf") does not inherit from %s", SVfARG(name), SVfARG(metaclass), is_class ? "mop::class" : "mop::role")));
 
     meta = new_meta(metaclass, name, version, with, is_class ? extends : NULL);
     *pkgp = name;
@@ -1692,7 +1692,7 @@ THX_parse_namespace(pTHX_ bool is_class, SV **pkgp)
     SAVEDESTRUCTOR(restore_name_keyword, name_gv);
     GvCV_set(name_gv, newCONSTSUB(NULL, NULL, name));
 
-    meta_gv = gv_fetchpvs("mop::minus::internals::syntax::CURRENT_META", 0, SVt_NULL);
+    meta_gv = gv_fetchpvs("mop::internals::syntax::CURRENT_META", 0, SVt_NULL);
     save_scalar(meta_gv);
     sv_setsv(GvSV(meta_gv), meta);
 
@@ -1807,7 +1807,7 @@ return_true(pTHX_ OP *o, GV *namegv, SV *ckobj)
 static OP *
 run_has(pTHX_ GV *namegv, SV *psobj, U32 *flagsp)
 {
-    GV *gv = gv_fetchpvs("mop::minus::internals::syntax::add_attribute", 0, SVt_PVCV);
+    GV *gv = gv_fetchpvs("mop::internals::syntax::add_attribute", 0, SVt_PVCV);
     I32 floor;
     OP *o;
     CV *cv;
@@ -1841,7 +1841,7 @@ run_has(pTHX_ GV *namegv, SV *psobj, U32 *flagsp)
 static OP *
 run_method(pTHX_ GV *namegv, SV *psobj, U32 *flagsp)
 {
-    GV *gv = gv_fetchpvs("mop::minus::internals::syntax::add_method", 0, SVt_PVCV);
+    GV *gv = gv_fetchpvs("mop::internals::syntax::add_method", 0, SVt_PVCV);
     I32 floor;
     OP *o;
     CV *cv;
@@ -1884,7 +1884,7 @@ remove_meta(pTHX_ void *p)
 static OP *
 run_namespace(pTHX_ GV *namegv, SV *psobj, U32 *flagsp)
 {
-    GV *gv = gv_fetchpvs("mop::minus::internals::syntax::build_meta", 0, SVt_PVCV);
+    GV *gv = gv_fetchpvs("mop::internals::syntax::build_meta", 0, SVt_PVCV);
     SV *pkg = NULL;
     I32 floor;
     OP *o;
@@ -1925,9 +1925,9 @@ run_namespace(pTHX_ GV *namegv, SV *psobj, U32 *flagsp)
 }
 
 /* }}} */
-/* xsubs: mop::minus::internals::util {{{ */
+/* xsubs: mop::internals::util {{{ */
 
-MODULE = mop::minus  PACKAGE = mop::minus::internals::util
+MODULE = mop  PACKAGE = mop::internals::util
 
 PROTOTYPES: DISABLE
 
@@ -2021,9 +2021,9 @@ incr_attr_generation(meta)
     SV *meta
 
 # }}}
-# xsubs: mop::minus::internals::syntax {{{
+# xsubs: mop::internals::syntax {{{
 
-MODULE = mop::minus  PACKAGE = mop::minus::internals::syntax
+MODULE = mop  PACKAGE = mop::internals::syntax
 
 PROTOTYPES: DISABLE
 
@@ -2031,10 +2031,10 @@ BOOT:
 {
     CV *class, *role, *has, *method;
 
-    class  = get_cv("mop::minus::internals::syntax::class",  GV_ADD);
-    role   = get_cv("mop::minus::internals::syntax::role",   GV_ADD);
-    has    = get_cv("mop::minus::internals::syntax::has",    GV_ADD);
-    method = get_cv("mop::minus::internals::syntax::method", GV_ADD);
+    class  = get_cv("mop::internals::syntax::class",  GV_ADD);
+    role   = get_cv("mop::internals::syntax::role",   GV_ADD);
+    has    = get_cv("mop::internals::syntax::has",    GV_ADD);
+    method = get_cv("mop::internals::syntax::method", GV_ADD);
 
     cv_set_call_parser(class,  run_namespace, &PL_sv_undef);
     cv_set_call_parser(role,   run_namespace, &PL_sv_undef);
@@ -2046,7 +2046,7 @@ BOOT:
     cv_set_call_checker(has,    compile_keyword_away, &PL_sv_undef);
     cv_set_call_checker(method, compile_keyword_away, &PL_sv_undef);
 
-    twigils_hint_key_sv = newSVpvs_share("mop::minus::internals::syntax/twigils");
+    twigils_hint_key_sv = newSVpvs_share("mop::internals::syntax/twigils");
     twigils_hint_key_hash = SvSHARED_HASH(twigils_hint_key_sv);
     default_class_metaclass_hint_key_sv = newSVpvs_share("mop/default_class_metaclass");
     default_class_metaclass_hint_key_hash
